@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reviews - Game Grid</title>
+  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <h1 class="logo">Game Grid</h1>
+      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
+      
+      <form class="search-bar">
+        <input type="text" placeholder="Search games...">
+      </form>
+      
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="/reviews.html">Reviews</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="login.html" class="btn" id="loginBtn">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="reviews">
+      <span class="reviews-header">
+        <h2>Game Reviews</h2>
+        <span class="view-toggle">
+          <button id="gridView" class="active">Grid</button>
+          <button id="listView">List</button>
+        </span>
+      </span>
+      <span class="reviews-container grid-view" id="reviewsContainer"></span>
+    </section>
+  </main>
+
+  <span id="gameModal" class="modal">
+    <span class="modal-content">
+      <span class="close-modal">&times;</span>
+      <span id="gameDetails" class="game-details"></span>
+    </span>
+  </span>
+
+  <footer>
+    <p>© 2024 Game Grid. All rights reserved.</p>
+    <a href="aboutus.html">About Us</a>
+  </footer>
+
+
+    <script src="script.js"></script>
+
+  
+  
+  
+
+  
+</body>
+
+</html>
+
