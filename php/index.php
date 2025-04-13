@@ -1,4 +1,7 @@
 <?php
+//since everything related to our db connection is handle by another php file
+// we can include that within another file with the php script at the top of the page 
+
 
 // Include database connection
 require_once 'db.php';

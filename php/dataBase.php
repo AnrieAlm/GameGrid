@@ -1,10 +1,28 @@
-<?php
-// db.php
-$host = 'localhost';
-$dbname = 'your_database_name';
-$username = 'your_username';
-$password = 'your_password';
+<?php // connecting to mySQL server in php and the other php files as well
+$db_server = "localhost";
+$db_user = "root";
+$db_pass = ""; // Try "root" if empty doesn't work
+$db_name = "businessdb"; // Fixed typo
 
+// Remove the duplicate connection attempt
+
+//if you cant connetct to the database we dont want this to be displayed to our user 
+try{$conn = mysqli_connect(
+    $db_server,
+    $db_user,
+    $db_pass,
+    $db_name);}
+
+    catch(mysqli_sql_exception){
+        echo "Could not connect! <br>"; 
+    }
+
+
+if($conn){
+    echo "You are connected! <br>"; 
+} else {
+    echo "Could not connect: " . mysqli_connect_error();
+}
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
