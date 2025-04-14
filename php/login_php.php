@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user_id'] = $user['id']; // Store user ID in session
             $_SESSION['username'] = $user['username']; // Store username in session
-            header("Location: profile.html"); // Redirect to profile page
+            header("Location: profile.php"); // Redirect to profile page
             exit;
         } else {
             echo "Invalid username or password."; // Show error message
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Handle logout form submission
     if (isset($_POST['logout'])) {
         session_destroy(); // Destroy the session
-        header("Location: login.html"); // Redirect to login page
+        header("Location: login.php"); // Redirect to login page
         exit;
     }
 }
