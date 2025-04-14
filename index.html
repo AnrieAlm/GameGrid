@@ -198,22 +198,10 @@
   </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <h1 class="logo">Game Grid</h1>
-      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
-      <form class="search-bar">
-        <input type="text" placeholder="Search...">
-      </form>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="/reviews.html">Reviews</a></li>
-        <li><a href="profile.html">Profile</a></li>
-        <li><a href="login.html" class="btn" id="loginBtn">Login</a></li>
-      </ul>
-    </nav>
-  </header>
-  </header>
+  <?php
+// Include the header
+include 'header.php';
+?>
 
   <main>
     <!-- Hero Slider Section -->
@@ -275,10 +263,10 @@
     </section>
   </main>
 
-  <footer>
-    <p>© 2024 Game Grid. All rights reserved.</p>
-    <a href="aboutus.html">About Us</a>
-  </footer>
+  <?php
+  // Include the footer
+  include 'footer.php';
+  ?>
 
   <script src="script.js"></script>
 </body>
