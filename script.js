@@ -91,6 +91,14 @@ const games = [
 // Add more games here...
 ];
 
+// Load bookmarks from local storage
+let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+// Sync initial bookmark status
+games.forEach(game => {
+    game.isBookmarked = bookmarks.includes(game.id);
+});
+
 // Function to initialize the hero slider
 function initSlider() {
   const heroBg = document.querySelector('.hero-background'); // Hero background element
@@ -202,6 +210,81 @@ function displayReviews() {
   });
 }
 
+// Unified toggle function for bookmarks
+function toggleBookmark(gameId) {
+  const game = games.find(game => game.id === gameId);
+  if (!game) return;
+
+  // Toggle bookmark status
+  game.isBookmarked = !game.isBookmarked;
+
+  // Update bookmarks array
+  if (game.isBookmarked) {
+      bookmarks.push(gameId);
+  } else {
+      bookmarks = bookmarks.filter(id => id !== gameId);
+  }
+
+  // Save updated bookmarks to local storage
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+  // Update the UI
+  updateBookmarkUI(gameId);
+  displayBookmarksOnProfile();
+}
+
+// UI update function for bookmarks
+function updateBookmarkUI(gameId) {
+    const buttons = document.querySelectorAll(`[data-game-id="${gameId}"] .bookmark-btn`);
+    buttons.forEach(button => {
+        button.innerHTML = bookmarks.includes(gameId) ? '★' : '☆';
+    });
+}
+
+// Function to display bookmarks on the profile page
+function displayBookmarksOnProfile() {
+    const container = document.querySelector('.p_bookmarks-content');
+    if (!container) return;
+
+    container.innerHTML = bookmarks.length
+        ? bookmarks.map(id => {
+              const game = games.find(g => g.id === id);
+              return `<li><a href="/inner-review.html?id=${id}">${game?.title || 'Unknown Game'}</a></li>`;
+          }).join('')
+          : '<li>No bookmarks yet.</li>';
+        }
+
+        function loadPlatformGames(platform = '') {
+
+          const gamesContainer = document.getElementById('platformGames');
+        
+    
+  fetch(`get_platform_games.php?platform=${platform}`)
+        
+            .then(response => response.json())
+        
+            .then(games => {
+        
+              gamesContainer.innerHTML = games.map(game => `
+        
+                <div class="game-card">
+        
+                  <img src="${game.image_url}" alt="${game.title}">
+        
+                  <h3>${game.title}</h3>
+        
+                  <span class="platform-tag">${game.platform}</span>
+        
+                </div>
+        
+              `).join('');
+        
+            })
+        
+            .catch(error => console.error('Error:', error));}
+
+
+
 // DOMContentLoaded event listener to initialize components
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM fully loaded. Initializing components..."); // Log initialization message
@@ -247,7 +330,38 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.warn("Reviews container not found. Skipping review display."); // Log warning
   }
+  // Display bookmarks on the profile page
+  displayBookmarksOnProfile();
+
+ // Platform filtering
+
+ const platformButtons = document.querySelectorAll('.platform-btn');
+
+ platformButtons.forEach(button => {
+
+   button.addEventListener('click', () => {
+
+     platformButtons.forEach(btn => btn.classList.remove('active'));
+
+     button.classList.add('active');
+
+     loadPlatformGames(button.dataset.platform);
+
+   });
+
+ });
+
+ 
+
+ // Initial load
+
+ loadPlatformGames();
+
+ console.log("DOM fully loaded. Initializing components...");
+
+
 });
+
 //-----------------bookmark
 // Listen for any click event on the document
 document.addEventListener('click', (event) => {

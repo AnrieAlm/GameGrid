@@ -80,10 +80,10 @@ function displayReviewDetail(game) {
   // Embed a YouTube video related to the game
   videoContainer.innerHTML = `
     <iframe width="560" height="315" 
-      src="https://youtu.be/bh5gzGs-63Y?si=QgnkFYzfD76Mo1RE" 
+      src="https://www.youtube.com/embed/bh5gzGs-63Y"
       frameborder="0" 
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    </iframe>
+    </iframe> 
     <div class="watch-on-youtube">
       <a href="https://youtu.be/bh5gzGs-63Y?si=QgnkFYzfD76Mo1RE" target="_blank">
         <i class="fab fa-youtube"></i> Watch on YouTube
