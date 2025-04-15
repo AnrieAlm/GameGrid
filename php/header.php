@@ -1,4 +1,7 @@
-
+<?php
+require 'init.php'; // Start the session
+require 'db.php'; // Database connection
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,21 +17,19 @@
         <nav class="navbar">
             <h1 class="logo">Game Grid</h1>
             <button class="menu-toggle" aria-label="Toggle menu">☰</button>
-            
             <form class="search-bar">
                 <input type="text" placeholder="Search games...">
             </form>
-            
             <ul class="nav-links">
-    <li><a href="index.php">Home</a></li>
-    <li><a href="reviews.php">Reviews</a></li>
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <li><a href="profile.php">Profile</a></li>
-        <li><a href="logout.php" class="btn" id="loginBtn">Logout</a></li>
-    <?php else: ?>
-        <li><a href="login.php" class="btn" id="loginBtn">Login</a></li>
-        <li><a href="register.php" class="btn" id="registerBtn">Register</a></li>
-    <?php endif; ?>
-</ul>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="reviews.php">Reviews</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li><a href="/GameGrid/profile.php">Profile</a></li>
+                    <li><a href="logout.php" class="btn" id="loginBtn">Logout</a></li>
+                <?php else: ?>
+                    <li><a href="login.php" class="btn" id="loginBtn">Login</a></li>
+            
+                <?php endif; ?>
+            </ul>
         </nav>
     </header>

@@ -254,7 +254,34 @@ function displayBookmarksOnProfile() {
           : '<li>No bookmarks yet.</li>';
         }
 
+        function loadPlatformGames(platform = '') {
 
+          const gamesContainer = document.getElementById('platformGames');
+        
+    
+  fetch(`get_platform_games.php?platform=${platform}`)
+        
+            .then(response => response.json())
+        
+            .then(games => {
+        
+              gamesContainer.innerHTML = games.map(game => `
+        
+                <div class="game-card">
+        
+                  <img src="${game.image_url}" alt="${game.title}">
+        
+                  <h3>${game.title}</h3>
+        
+                  <span class="platform-tag">${game.platform}</span>
+        
+                </div>
+        
+              `).join('');
+        
+            })
+        
+            .catch(error => console.error('Error:', error));}
 
 
 
@@ -305,6 +332,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // Display bookmarks on the profile page
   displayBookmarksOnProfile();
+
+ // Platform filtering
+
+ const platformButtons = document.querySelectorAll('.platform-btn');
+
+ platformButtons.forEach(button => {
+
+   button.addEventListener('click', () => {
+
+     platformButtons.forEach(btn => btn.classList.remove('active'));
+
+     button.classList.add('active');
+
+     loadPlatformGames(button.dataset.platform);
+
+   });
+
+ });
+
+ 
+
+ // Initial load
+
+ loadPlatformGames();
+
+ console.log("DOM fully loaded. Initializing components...");
+
+
 });
 
 //-----------------bookmark

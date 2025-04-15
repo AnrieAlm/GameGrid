@@ -1,15 +1,15 @@
 <?php
 // Start the session to access session variables
 session_start();
-
+// Include the database connection file
+require 'db.php';
 // Redirect to login page if the user is not logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
 
-// Include the database connection file
-require 'db.php';
+
 
 // Fetch user details from the database based on the session user ID
 $user_id = $_SESSION['user_id'];

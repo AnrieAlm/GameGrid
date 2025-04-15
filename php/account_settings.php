@@ -8,7 +8,7 @@ require 'db.php'; // Database connection
 
 // Check if the user is logged in (session exists)
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.html"); // Redirect to login if not logged in
+    header("Location: login.php"); // Redirect to login if not logged in
     exit;
 }
 

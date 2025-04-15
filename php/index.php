@@ -1,6 +1,6 @@
 <?php
-// Start the session to access session variables
-session_start();
+require 'init.php'; // Start the session
+require 'db.php'; // Database connection
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +10,7 @@ session_start();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Game Grid</title>
-  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+  <link href="style2.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* Hero Section */
@@ -244,14 +244,16 @@ session_start();
 
     <!-- Platform Browse Section -->
     <section class="platform-section">
-      <h2>Browse by Platform</h2>
+      <h2></h2>
       <nav class="platform-grid">
-        <a href="#" class="platform-btn">PS5</a>
-        <a href="#" class="platform-btn">Nintendo</a>
-        <a href="#" class="platform-btn">Xbox</a>
-        <a href="#" class="platform-btn">PS4</a>
-        <a href="#" class="platform-btn">PC</a>
+        <button class="platform-btn active" data-platform="">All</button>
+        <button class="platform-btn" data-platform="PS5">PS5</button>
+        <button class="platform-btn" data-platform="Nintendo">Nintendo</button>
+        <button class="platform-btn" data-platform="Xbox">Xbox</button>
+        <button class="platform-btn" data-platform="PS4">PS4</button>
+        <button class="platform-btn" data-platform="PC">PC</button>
       </nav>
+      <div id="platformGames" class="games-grid"></div>
     </section>
 
     <!-- Trending Reviews -->
@@ -281,10 +283,11 @@ session_start();
     </section>
   </main>
 
-  <footer>
-    <p>© 2024 Game Grid. All rights reserved.</p>
-    <a href="aboutus.html">About Us</a>
-  </footer>
+  <!-- Footer -->
+  <?php
+// Include the footer
+include 'footer.php';
+?>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
