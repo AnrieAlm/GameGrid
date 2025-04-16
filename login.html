@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 
 <head>
@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <?php
+  <!-- <?php
   session_start();
   if (isset($_SESSION['error'])) {
       echo '<div class="alert error">' . htmlspecialchars($_SESSION['error']) . '</div>';
@@ -20,7 +20,7 @@
       echo '<div class="alert success">' . htmlspecialchars($_SESSION['success']) . '</div>';
       unset($_SESSION['success']);
   }
-  ?>
+  ?> 
 
 
   <header>
@@ -34,7 +34,7 @@
       
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="/reviews.html">Reviews</a></li>
+        <li><a href="Reviews.html">Reviews</a></li>
         <li><a href="profile.html">Profile</a></li>
         <li><a href="login.html" class="btn" id="loginBtn">Login</a></li>
       </ul>
@@ -48,11 +48,11 @@
         <button class="tab-btn" data-tab="register">Register</button>
       </nav>
 
-      <!-- Login Section -->
+      <!-- Login Section 
       <article class="tab-content" id="login-tab">
         <h1>Login to Game Grid</h1>
         <p>Access your profile and engage with the gaming community.</p>
-<!-- Login Form -->
+<!-- Login Form 
 <form id="loginForm" method="POST" action="auth.php">
 
   <input type="hidden" name="login" value="1">
@@ -71,7 +71,7 @@
         </form>
       </article>
 
-      <!-- Register Section -->
+      <!-- Register Section 
       <form id="registerForm" method="POST" action="auth.php">
         <input type="hidden" name="register" value="1">
 
@@ -118,4 +118,4 @@
 <script src="login.js"></script>
 </body>
 
-</html>
+</html> -->

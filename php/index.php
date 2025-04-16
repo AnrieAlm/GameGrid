@@ -1,9 +1,4 @@
 <?php
-//since everything related to our db connection is handle by another php file
-// we can include that within another file with the php script at the top of the page 
-
-
-// Include database connection
 require_once 'db.php';
 
 // Check if the user is logged in
@@ -18,14 +13,14 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 $gameId = $_POST['game_id'];
 
-// Check if the game exists
-$stmt = $pdo->prepare("SELECT id FROM games WHERE id = :game_id");
-$stmt->execute(['game_id' => $gameId]);
-if (!$stmt->fetch()) {
-    http_response_code(404); // Not Found
-    echo json_encode(['success' => false, 'message' => 'Game not found']);
-    exit;
-}
+// // Check if the game exists
+// $stmt = $pdo->prepare("SELECT id FROM games WHERE id = :game_id");
+// $stmt->execute(['game_id' => $gameId]);
+// if (!$stmt->fetch()) {
+//     http_response_code(404); // Not Found
+//     echo json_encode(['success' => false, 'message' => 'Game not found']);
+//     exit;
+// }
 
 // Check if the bookmark already exists
 $stmt = $pdo->prepare("SELECT * FROM bookmarks WHERE user_id = :user_id AND game_id = :game_id");
@@ -43,5 +38,290 @@ if ($bookmarkExists) {
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
     echo json_encode(['success' => true, 'action' => 'added']);
 }
-
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Grid</title>
+  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+
+ 
+
+    .view-toggle {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
+  }
+
+  .view-toggle button {
+    background: #1e1e1e;
+    color: #00ffc8;
+    border: 2px solid #00ffc8;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .view-toggle button.active {
+    background: #00ffc8;
+    color: #1e1e1e;
+  }
+  /* Fix margin typo */
+  .hero-meta {
+    margin-bottom: 0.5rem;
+  }
+     /* Hero Section */
+    #hero-section {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      max-height: 800px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .hero-slider {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .hero-background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('images/hero.jpg') center/cover no-repeat;
+      filter: brightness(0.4);
+      z-index: 1;
+      transition: background-image 0.5s ease-in-out;
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 20%;
+      left: 0;
+      right: 0;
+      padding: 2rem;
+      text-align: center;
+      color: white;
+      z-index: 2;
+      display: block;
+    }
+
+    .hero-content h2 {
+      font-size: 3.5rem;
+      margin: 0 0 0.5rem 0;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom:0.5rem ;}
+
+    .platform-tag, .rating {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .hero-content p {
+      font-size: 1.4rem;
+      margin: 0 0 2rem 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.4;
+    }
+
+    .read-btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: #1e1e1e;
+      color: #00ffc8;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+  
+    .read-btn:hover {
+      background: #00e6b8;
+      transform: translateY(-2px);
+    }
+
+    /* Slider Controls */
+    .slider-controls {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .slider-controls.left { left: 2rem; }
+    .slider-controls.right { right: 2rem; }
+
+    .slider-dots {
+      position: absolute;
+      bottom: 10%;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      z-index: 3;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      #hero-section {
+        height: 70vh;
+      }
+      
+      .hero-content {
+        padding: 1rem;
+        bottom: 15%;
+      }
+      
+      .hero-content h2 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-content p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .platform-tag, .rating {
+        font-size: 1rem;
+      }
+      
+      .slider-controls {
+        padding: 0.5rem;
+      }
+      
+      .read-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <h1 class="logo">Game Grid</h1>
+      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
+      <form class="search-bar">
+        <input type="text" placeholder="Search...">
+      </form>
+      <ul class="nav-links">
+        <li><a href="index.php">Home</a></li>
+        <li><a href="reviews.php">Reviews</a></li>
+        <li><a href="profile.php">Profile</a></li>
+        <li><a href="login.php" class="btn" id="loginBtn">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+  </header>
+
+  <main>
+    <!-- Hero Slider Section -->
+    <section id="hero-section">
+      <article class="hero-slider">
+        <!-- Background Image -->
+        <div class="hero-background"></div>
+        
+        <!-- Slide Content Empty container -->
+        <div class="hero-content">
+          <h2></h2>
+          <div class="hero-meta">
+            <span class="platform-tag"></span>
+            <span class="rating"></span>
+          </div>
+          <p></p>
+          <a href="#" class="read-btn"></a>
+        </div>
+        
+        <!-- Slider Controls -->
+        <button class="slider-controls left" aria-label="Previous slide">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="slider-controls right" aria-label="Next slide">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <!-- Slider Dots -->
+        <nav class="slider-dots" aria-label="Slider navigation">
+          <button class="dot active" aria-label="Slide 1"></button>
+          <button class="dot" aria-label="Slide 2"></button>
+          <button class="dot" aria-label="Slide 3"></button>
+        </nav>
+      </article>
+    </section>
+
+    <!-- Platform Browse Section -->
+    <section class="platform-section">
+      <h2>Browse by Platform</h2>
+      <nav class="platform-grid">
+        <a href="#" class="platform-btn">PS5</a>
+        <a href="#" class="platform-btn">Nintendo</a>
+        <a href="#" class="platform-btn">Xbox</a>
+        <a href="#" class="platform-btn">PS4</a>
+        <a href="#" class="platform-btn">PC</a>
+      </nav>
+    </section>
+
+    <!-- Trending Reviews -->
+    <section id="trending-reviews">
+      <div class="section-header">
+        <h2>Trending Reviews</h2>
+        <div class="view-toggle">
+          <button id="gridView" class="active">Grid</button>
+          <button id="listView">List</button>
+        </div>
+      </div>
+      <div id="reviewsContainer" class="reviews-container grid-view"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2024 Game Grid. All rights reserved.</p>
+    <a href="aboutus.html">About Us</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html> 
+

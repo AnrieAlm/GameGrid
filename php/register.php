@@ -36,7 +36,7 @@ session_start();
       
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="/reviews.html">Reviews</a></li>
+        <li><a href="Reviews.html">Reviews</a></li>
         <li><a href="login.php">Login</a></li>
         <li><a href="register.php" class="btn" id="registerBtn">Register</a></li>
       </ul>

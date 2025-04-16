@@ -2,7 +2,7 @@
 $db_server = "localhost";
 $db_user = "root";
 $db_pass = ""; // Try "root" if empty doesn't work
-$db_name = "businessdb"; // Fixed typo
+$db_name = "gamegrid"; // Fixed typo
 
 // Remove the duplicate connection attempt
 
