@@ -8,6 +8,12 @@ require 'db.php'; // Database connection
 $review_id = null;
 $review = null;
 
+// Validate the review ID
+
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+
+  $review_id = (int)$_GET['id'];
+}
 // Handle comment submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
     $comment_content = trim($_POST['comment']);
@@ -22,14 +28,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
             'username' => $username,
             'content' => $comment_content
         ]);
+        header("Location: " . htmlspecialchars($_SERVER['PHP_SELF']) . "?id=" . $review_id);
 
+        exit();
+    }
+}
+// Handle Comment Update (Edit)
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_comment'])) {
+
+    $comment_id = (int)$_POST['comment_id'];
+
+    $updated_content = trim($_POST['updated_content']);
+    if (!empty($updated_content)) {
+
+        // Uncomment the following lines to add user_id validation
+
+        // $logged_in_user_id = $_SESSION['user_id']; // Get logged-in user's ID
+
+        // $stmtCheck = $pdo->prepare("SELECT user_id FROM comments WHERE id = :comment_id");
+
+        // $stmtCheck->execute(['comment_id' => $comment_id]);
+
+        // $comment = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+        // if ($comment && $comment['user_id'] === $logged_in_user_id) {
+          $stmtUpdate = $pdo->prepare("UPDATE comments SET comment_text = :comment_text WHERE id = :comment_id");
+
+          $stmtUpdate->execute([
+  
+             'comment_text' => $updated_content,
+  
+              'comment_id' => $comment_id
+  
+          ]);
         header("Location: " . htmlspecialchars($_SERVER['PHP_SELF']) . "?id=" . $review_id);
         exit();
-    } else {
-        echo '<p>Comment cannot be empty.</p>';
-    }
+    // }
 
+  } else {
+
+    echo '<p>Comment content cannot be empty.</p>';
+  }
 }
+
+
+    // Handle Comment Deletion (Delete)
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_comment'])) {
+
+  $comment_id = (int)$_POST['comment_id'];
+
+  // Uncomment the following lines to add user_id validation
+
+  // $logged_in_user_id = $_SESSION['user_id']; // Get logged-in user's ID
+
+  // $stmtCheck = $pdo->prepare("SELECT user_id FROM comments WHERE id = :comment_id");
+
+  // $stmtCheck->execute(['comment_id' => $comment_id]);
+
+  // $comment = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+  // if ($comment && $comment['user_id'] === $logged_in_user_id) {
+    $stmtDelete = $pdo->prepare("DELETE FROM comments WHERE id = :comment_id");
+
+    $stmtDelete->execute(['comment_id' => $comment_id]);
+
+    header("Location: " . htmlspecialchars($_SERVER['PHP_SELF']) . "?id=" . $review_id);
+
+    exit();
+
+    // }
+}
+
 
 // Validate the review ID
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
@@ -225,6 +296,38 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   font-size: 1.1rem;
   margin-right: 5px;
 }
+.comment-actions {
+  margin-top: 5px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #a71d2a;
+}
   </style>
 </head>
 <?php include 'header.php'; ?>
@@ -295,31 +398,33 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     </label>
     <textarea id="commentInput" name="comment" placeholder="Add a comment..." aria-label="Write a comment"></textarea>
     <input type="hidden" name="review_id" value="<?php echo htmlspecialchars($review_id); ?>">
-    <button type="submit" id="submitComment" class="btn">Comment</button>
+        <button type="submit" id="submitComment" class="btn">Comment</button>
   </form>
   <section id="commentsContainer" class="comments-container">
-    <?php
+     <?php
     if (!empty($comments)) {
         foreach ($comments as $comment) {
             echo '<div class="comment">';
             echo '<img src="https://placehold.co/50" alt="User Avatar">';
-            echo '<p><strong>' . htmlspecialchars($comment['username']) . '</strong>: ' .'</p>';
+            echo '<p><strong>' . htmlspecialchars($comment['username']) . '</strong>: ';
             if (isset($_GET['edit_comment']) && (int)$_GET['edit_comment'] === $comment['id']) {
               // Show edit form
-              echo '<form method="POST" class="edit-comment-form">';
-              echo '<textarea name="updated_content">' . htmlspecialchars($comment['content']) . '</textarea>';
+              echo '<form method="POST" class="edit-comment-form" >';
+              echo '<textarea name="updated_content">' . htmlspecialchars($comment['comment_text']) . '</textarea>';
               echo '<input type="hidden" name="comment_id" value="' . htmlspecialchars($comment['id']) . '">';
+              echo '<input type="hidden" name="review_id" value="<?php echo htmlspecialchars($review_id); ?>">';
               echo '<button type="submit" name="edit_comment" class="btn">Save</button>';
               echo '</form>';
           } else {
               // Show comment content
-              echo htmlspecialchars($comment['content']);
+              echo htmlspecialchars($comment['comment_text']);
           }
           echo '</p>';
           echo '<div class="comment-actions">';
           echo '<a href="?id=' . $review_id . '&edit_comment=' . $comment['id'] . '" class="edit-btn">Edit</a>';
           echo '<form method="POST" class="delete-comment-form" style="display:inline;">';
           echo '<input type="hidden" name="comment_id" value="' . htmlspecialchars($comment['id']) . '">';
+          echo '<input type="hidden" name="review_id" value="<?php echo htmlspecialchars($review_id); ?>">';
           echo '<button type="submit" name="delete_comment" class="delete-btn">Delete</button>';
           echo '</form>';
           echo '</div>';
@@ -329,7 +434,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     } else {
         echo '<p>No comments yet. Be the first to comment!</p>';
     }
-    ?>
+    ?> 
   </section>
 </section>
       </section>
@@ -338,7 +443,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
   <?php
   // Include the footer
-  include 'footer.php';
+  //include 'footer.php';
   ?>
   <script src="script.js"></script>
   <script src="review.js"></script>
