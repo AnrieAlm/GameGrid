@@ -2,7 +2,19 @@
 <?php
 require 'init.php'; // Start the session
 require 'db.php'; // Database connection
+
+
+// Fetch games data from the database
+try {
+    $stmt = $pdo->query("SELECT * FROM games ORDER BY id DESC");
+    $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Error fetching games: " . $e->getMessage());
+    $games = []; // Initialize as empty array if query fails
+}
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -12,7 +24,7 @@ require 'db.php'; // Database connection
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reviews - Game Grid</title>
-  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+  <link href="style2.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>

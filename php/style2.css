@@ -168,23 +168,23 @@ header {
 }
   
  /* Responsive video wrapper */
-.video-container {
-  position: relative; /* For absolute positioning of iframe */
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0; /* Reset height */
-  overflow: hidden; /* Hide overflow */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
-}
+/* .video-container {
+  position: relative; /* For absolute positioning of iframe 
+  padding-bottom: 56.25%; /* 16:9 aspect ratio 
+  height: 0; /* Reset height 
+  overflow: hidden; /* Hide overflow 
+  border-radius: 8px; /* Rounded corners 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow 
+} */
   
-  /* Video iframe positioning */
+  /* Video iframe positioning 
 .video-container iframe {
-  position: absolute; /* Remove from document flow */
-  top: 0; /* Align to top */
-  left: 0; /* Align to left */
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-}
+  position: absolute; Remove from document flow 
+  top: 0;  Align to top 
+  left: 0; /* Align to left 
+  width: 100%; /* Full width 
+  height: 100%; /* Full height 
+} /*
   
   /* YouTube link container */
 .watch-on-youtube {
@@ -779,20 +779,21 @@ main {
     border-radius: 10px;     /* Rounded corners */
     margin: 20px 0;     /* Vertical spacing */
   }
+  /*
   .video-container {
-    position: relative;     /* For absolute child positioning */
-    padding-bottom: 56.25%;     /* 16:9 aspect ratio */
-    height: 0;     /* Height controlled by padding */
-    margin: 20px 0;     /* Vertical spacing */
+    position: relative;     /* For absolute child positioning 
+    padding-bottom: 56.25%;     /* 16:9 aspect ratio 
+    height: 0;     /* Height controlled by padding 
+    margin: 20px 0;     /* Vertical spacing 
   }
   
   .video-container iframe {
-    position: absolute;     /* Position within container */
-    top: 0;     /* Align to top */
-    left: 0;     /* Align to left */
-    width: 100%;     /* Full width */
-    height: 100%;     /* Full height */
-  }
+    position: absolute;     /* Position within container 
+    top: 0;     /* Align to top 
+    left: 0;     /* Align to left 
+    width: 100%;     /* Full width 
+    height: 100%;     /* Full height 
+  } */
   .review-section {
     margin: 20px 0;     /* Vertical spacing */
     padding: 20px;     /* Inner spacing */

@@ -1,5 +1,15 @@
 <?php
 session_start();
+// Redirect authenticated users to the homepage
+
+if (isset($_SESSION['user_id'])) {
+
+  header("Location: index.php");
+
+  exit;
+
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -7,7 +17,7 @@ session_start();
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Authentication - Game Grid</title>
-  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+  <link href="style2.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
       .alert {
@@ -25,32 +35,7 @@ session_start();
     color: #155724;
     border: 1px solid #c3e6cb;
 }
-      /* General Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #121212; /* Dark background color */
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.auth-container {
-  display: flex;     /* Flex layout */
-  justify-content: center;     /* Center horizontally */
-  align-items: center;     /* Center vertically */
-  min-height: calc(100vh - 200px);     /* Almost full viewport height */
-  padding: 20px;     /* Inner spacing */
-  background: #121212; /* Dark background for gaming vibe */
-}
-
+      
   
 .tab-btn {
   display: inline-block;
@@ -182,21 +167,15 @@ input[type="checkbox"] + label {
       unset($_SESSION['success']);
   }
   ?>
-  <header>
-    <nav class="navbar">
-      <h1 class="logo">Game Grid</h1>
-      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
-      <form class="search-bar">
-        <input type="text" placeholder="Search games...">
-      </form>
-      <ul class="nav-links">
-        <li><a href="index.php">Home</a></li>
-        <li><a href="/reviews.php">Reviews</a></li>
-        <li><a href="profile.php">Profile</a></li>
-        <li><a href="login.php" class="btn" id="loginBtn">Login</a></li>
-      </ul>
-    </nav>
-  </header>
+  
+
+      <!-- Header Section -->
+
+ <!-- Include the header.php file -->
+
+ <?php include 'header.php'; ?>
+
+
   <main class="auth-container">
     <section class="auth-box">
       <nav class="auth-tabs">
@@ -207,7 +186,7 @@ input[type="checkbox"] + label {
       <article class="tab-content" id="login-tab">
         <h1>Login to Game Grid</h1>
         <p>Access your profile and engage with the gaming community.</p>
-        <form id="loginForm" method="POST" action="auth.php">
+        <form id="loginForm" method="POST" action="index.php">
           <input type="hidden" name="login" value="1">
           <label for="loginEmail">Email</label>
           <input type="email" id="loginEmail" name="email" placeholder="Enter your email" required>
@@ -224,7 +203,7 @@ input[type="checkbox"] + label {
       <article class="tab-content" id="register-tab" style="display: none;">
         <h2>Create Your Gaming Profile</h2>
         <p>Join thousands of gamers on Game Grid.</p>
-        <form id="registerForm" method="POST" action="auth.php">
+        <form id="registerForm" method="POST" action="index.php">
           <input type="hidden" name="register" value="1">
           <label for="fullName">Full Name</label>
           <input type="text" id="fullName" name="full_name" placeholder="Enter your full name" required>

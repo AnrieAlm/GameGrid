@@ -1,7 +1,67 @@
 <?php
+session_start(); // Start the session at the top of the file
+$user_id = $_SESSION['user_id'] ?? 1; // Use the logged-in user's ID or a default value
 require 'init.php'; // Start the session
 require 'db.php'; // Database connection
+
+// Initialize variables
+$review_id = null;
+$review = null;
+
+// Handle comment submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
+    $comment_content = trim($_POST['comment']);
+    $username = 'Anonymous'; // Replace with actual user session or input if available
+    $review_id = (int)$_POST['review_id'];
+
+    if (!empty($comment_content)) {
+        // Insert the comment into the database
+        $stmt = $pdo->prepare("INSERT INTO comments (review_id, username, comment_text, created_at) VALUES (:review_id, :username, :content, NOW())");
+        $stmt->execute([
+            'review_id' => $review_id,
+            'username' => $username,
+            'content' => $comment_content
+        ]);
+
+        header("Location: " . htmlspecialchars($_SERVER['PHP_SELF']) . "?id=" . $review_id);
+        exit();
+    } else {
+        echo '<p>Comment cannot be empty.</p>';
+    }
+
+}
+
+// Validate the review ID
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $review_id = (int)$_GET['id'];
+
+    // Fetch review details from the database
+    $stmt = $pdo->prepare("SELECT * FROM reviews WHERE id = :review_id");
+    $stmt->execute(['review_id' => $review_id]);
+    $review = $stmt->fetch();
+
+    if ($review) {
+        // Fetch associated game details
+        $game_id = $review['game_id']; // Assuming the review table has a foreign key `game_id`
+        $stmtGame = $pdo->prepare("SELECT * FROM games WHERE id = :game_id");
+        $stmtGame->execute(['game_id' => $game_id]);
+        $game = $stmtGame->fetch();
+
+        // Fetch screenshots for the game
+        $stmtScreenshots = $pdo->prepare("SELECT * FROM screenshots WHERE game_id = :game_id");
+        $stmtScreenshots->execute(['game_id' => $game_id]);
+        $screenshots = $stmtScreenshots->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch comments for this review
+        $stmtComments = $pdo->prepare("SELECT * FROM comments WHERE review_id = :review_id ORDER BY created_at DESC");
+        $stmtComments->execute(['review_id' => $review_id]);
+        $comments = $stmtComments->fetchAll(PDO::FETCH_ASSOC);
+    }
+} else {
+    echo '<p>Invalid review ID.</p>';
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -9,147 +69,269 @@ require 'db.php'; // Database connection
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Game Review - Game Grid</title>
-  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+  <link href="style2.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
-  /* Bookmark Button Styling */
-.review-navigation {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .rating {
+      color: gold;
+      font-size: 1.2rem;
+    }
+
+    .review-meta {
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .review-meta span {
+      margin-right: 10px;
+    }
+
+    .review-meta .platforms {
+      background-color: #00ffc8;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+
+    .review-image {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .screenshots-section {
+      margin-top: 20px;
+    }
+
+    .screenshots-header {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .screenshot-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .screenshot-item {
+      flex: 1 1 calc(33.33% - 20px); /* Adjust for three columns with gaps */
+      position: relative;
+    }
+
+    .screenshot-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .bookmark-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(0, 255, 200, 0.8);
+      color: black;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Video Section */
+.video-section {
+  margin-top: 20px;
+  text-align: center; /* Center the section */
 }
 
-.bookmark {
-  background: rgba(54, 54, 54, 0.9);
-  border: 1px solid #00ffc8;
-  color: #00ffc8;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 7px;
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
+.video-container iframe {
+  width: 100%;
+  max-width: 560px; /* Set a maximum width for the video */
+  height: 315px;
+  margin: 0 auto; /* Center the iframe horizontally */
+}
+
+/* Comments Section */
+.comments-section {
+  margin-top: 20px;
+  text-align: center; /* Center the section */
+}
+
+.comment-form {
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  margin-left: 1rem;
+  gap: 10px; /* Add spacing between elements in the form */
 }
 
-.bookmark:hover {
-  background: #00ffc8;
-  color: #1e1e1e;
-  box-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
-  transform: scale(1.1);
+.comment-form label {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 10px;
 }
 
-.bookmark.bookmarked .bookmark-icon {
-  color: #00ffc8;
-  content: "★";
+.comment-form textarea {
+  width: 100%;
+  height: 100px;
+  resize: vertical;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
-  .bookmark {
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-  }
-  
-  .review-navigation {
-    padding: 0 1rem;
-  }
+.comments-container {
+  margin-top: 20px;
+  text-align: left; /* Reset alignment for comments list */
 }
-</style>
+
+.comment {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 5px;
+}
+
+.comment img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.comment strong {
+  font-size: 1.1rem;
+  margin-right: 5px;
+}
+  </style>
 </head>
+<?php include 'header.php'; ?>
 
 <body>
-  <?php
-  // Include the header
-  include 'header.php';
-  ?>
+  <div class="container">
+    <?php
+    if ($review) {
+        // Display game title and rating
+        echo '<h1>' . htmlspecialchars($game['title']) . '</h1>';
+        echo '<div class="review-meta">';
+        echo '<span class="rating"><i class="fas fa-star"></i> ' . htmlspecialchars($game['rating']) . '/5</span>';
+        //echo '<span>Review by ' . htmlspecialchars($review['reviewer_name']) . '</span>';
+        //echo '<span>' . htmlspecialchars($review['review_date']) . '</span>';
+        echo '</div>';
 
-  <main class="review-page">
-    <nav class="review-navigation">
-      <a href="reviews.php" class="back-link"><i class="fas fa-arrow-left"></i> Back to reviews</a>
-      <button class="bookmark" id="bookmarkBtn" aria-label="Bookmark this review">
-        <span class="bookmark-icon">☆</span>
-      </button>
-    </nav>
+        // Display platforms
+        echo '<div class="review-meta">';
+        //echo '<span class="platforms">' . htmlspecialchars($game['genre']) . '</span>';
+        //echo '<span class="platforms">' . htmlspecialchars($game['type']) . '</span>';
+        echo '<span class="platforms">' . htmlspecialchars($game['platform']) . '</span>';
+        echo '</div>';
 
-    <article id="reviewDetail" class="review-detail">
-      <!-- Dynamic content can be loaded here using PHP -->
-      <?php
-      // Example: Fetch review details from the database
-      require 'db.php'; // Database connection
+        // Display game image
+        echo '<img src="' . htmlspecialchars($game['image_url']) . '" alt="' . htmlspecialchars($game['title']) . '" class="review-image">';
 
-      // Assume we have a review ID passed via GET
-      if (isset($_GET['id'])) {
-          $review_id = $_GET['id'];
+        // Display review description
+        echo '<p>' . htmlspecialchars($review['content']) . '</p>';
 
-          // Fetch review details from the database
-          $stmt = $pdo->prepare("SELECT * FROM reviews WHERE id = :review_id");
-          $stmt->execute(['review_id' => $review_id]);
-          $review = $stmt->fetch();
+        // Display screenshots section
+        echo '<h2 class="screenshots-header">Screenshots</h2>';
+        echo '<div class="screenshot-grid">';
+        foreach ($screenshots as $screenshot) {
+            echo '<div class="screenshot-item">';
+            echo '<img src="' . htmlspecialchars($screenshot['image_url']) . '" alt="Screenshot of ' . htmlspecialchars($game['title']) . '">';
+            //echo '<button class="bookmark-btn">Bookmark</button>';
+            echo '</div>';
+        }
+        echo '</div>';
+    } else {
+        echo '<p>Review not found.</p>';
+    }
+    ?>
 
-          if ($review) {
-              echo '<h1>' . htmlspecialchars($review['title']) . '</h1>';
-              echo '<p>' . htmlspecialchars($review['content']) . '</p>';
-          } else {
-              echo '<p>Review not found.</p>';
-          }
-      } else {
-          echo '<p>No review selected.</p>';
-      }
-      ?>
-    </article>
+  </div>
 
-    <section class="video-section">
-      <h2>Official Trailer</h2>
-      <figure class="video-container" id="videoContainer">
+  <br>
+
         <!-- Example: Embed a video dynamically -->
-        <?php
-        if (isset($review) && !empty($review['video_url'])) {
-            echo '<iframe width="560" height="315" src="' . htmlspecialchars($review['video_url']) . '" frameborder="0" allowfullscreen></iframe>';
-        } else {
-            echo '<p>No video available.</p>';
-        }
-        ?>
-      </figure>
-    </section>
+        <section class="video-section">
+  <h2>Official Trailer</h2>
+  <div class="video-container">
+    <?php
+    if (!empty($review['video_url'])) {
+        echo '<iframe width="560" height="315" src="' . htmlspecialchars($review['video_url']) . '" frameborder="0" allowfullscreen></iframe>';
+    } else {
+        echo '<p>No video available.</p>';
+    }
+    ?>
+  </div>
+</section>
 
-    <section class="comments-section">
-      <h2>Comments</h2>
-      <form id="commentForm" class="comment-form">
-        <label for="commentInput" class="user-avatar">
-          <img src="https://placehold.co/50" alt="User Profile Picture">
-        </label>
-        <textarea id="commentInput" placeholder="Add a comment..." aria-label="Write a comment"></textarea>
-        <button type="submit" id="submitComment" class="btn">Comment</button>
-      </form>
-      <section id="commentsContainer" class="comments-container">
-        <!-- Example: Load comments dynamically -->
-        <?php
-        if (isset($review)) {
-            // Fetch comments for this review from the database
-            $stmt = $pdo->prepare("SELECT * FROM comments WHERE review_id = :review_id ORDER BY created_at DESC");
-            $stmt->execute(['review_id' => $review_id]);
-            $comments = $stmt->fetchAll();
-
-            if (!empty($comments)) {
-                foreach ($comments as $comment) {
-                    echo '<div class="comment">';
-                    echo '<img src="https://placehold.co/50" alt="User Avatar">';
-                    echo '<p><strong>' . htmlspecialchars($comment['username']) . '</strong>: ' . htmlspecialchars($comment['content']) . '</p>';
-                    echo '</div>';
-                }
-            } else {
-                echo '<p>No comments yet. Be the first to comment!</p>';
-            }
+<section class="comments-section">
+  <h2>Comments</h2>
+  <form id="commentForm" class="comment-form" method="POST">
+    <label for="commentInput" class="user-avatar">
+      <img src="https://placehold.co/50" alt="User Profile Picture">
+    </label>
+    <textarea id="commentInput" name="comment" placeholder="Add a comment..." aria-label="Write a comment"></textarea>
+    <input type="hidden" name="review_id" value="<?php echo htmlspecialchars($review_id); ?>">
+    <button type="submit" id="submitComment" class="btn">Comment</button>
+  </form>
+  <section id="commentsContainer" class="comments-container">
+    <?php
+    if (!empty($comments)) {
+        foreach ($comments as $comment) {
+            echo '<div class="comment">';
+            echo '<img src="https://placehold.co/50" alt="User Avatar">';
+            echo '<p><strong>' . htmlspecialchars($comment['username']) . '</strong>: ' .'</p>';
+            if (isset($_GET['edit_comment']) && (int)$_GET['edit_comment'] === $comment['id']) {
+              // Show edit form
+              echo '<form method="POST" class="edit-comment-form">';
+              echo '<textarea name="updated_content">' . htmlspecialchars($comment['content']) . '</textarea>';
+              echo '<input type="hidden" name="comment_id" value="' . htmlspecialchars($comment['id']) . '">';
+              echo '<button type="submit" name="edit_comment" class="btn">Save</button>';
+              echo '</form>';
+          } else {
+              // Show comment content
+              echo htmlspecialchars($comment['content']);
+          }
+          echo '</p>';
+          echo '<div class="comment-actions">';
+          echo '<a href="?id=' . $review_id . '&edit_comment=' . $comment['id'] . '" class="edit-btn">Edit</a>';
+          echo '<form method="POST" class="delete-comment-form" style="display:inline;">';
+          echo '<input type="hidden" name="comment_id" value="' . htmlspecialchars($comment['id']) . '">';
+          echo '<button type="submit" name="delete_comment" class="delete-btn">Delete</button>';
+          echo '</form>';
+          echo '</div>';
+          echo '</div>';
+            
         }
-        ?>
+    } else {
+        echo '<p>No comments yet. Be the first to comment!</p>';
+    }
+    ?>
+  </section>
+</section>
       </section>
     </section>
   </main>

@@ -3,7 +3,7 @@
 $host = 'localhost'; // Database host
 $dbname = 'gamegrid'; // Database name
 $username = 'root'; // Database username
-$password = ''; // Database password
+$password = 'root'; // Database password
 
 try {
     // Create a new PDO instance

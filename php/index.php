@@ -1,42 +1,12 @@
 <?php
 require_once 'db.php';
 
-// Check if the user is logged in
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['success' => false, 'message' => 'User not logged in']);
-    exit;
-}
-
-// Get POST data
-$userId = $_SESSION['user_id'];
-$gameId = $_POST['game_id'];
-
-// // Check if the game exists
-// $stmt = $pdo->prepare("SELECT id FROM games WHERE id = :game_id");
-// $stmt->execute(['game_id' => $gameId]);
-// if (!$stmt->fetch()) {
-//     http_response_code(404); // Not Found
-//     echo json_encode(['success' => false, 'message' => 'Game not found']);
-//     exit;
-// }
-
-// Check if the bookmark already exists
-$stmt = $pdo->prepare("SELECT * FROM bookmarks WHERE user_id = :user_id AND game_id = :game_id");
-$stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
-$bookmarkExists = $stmt->fetch();
-
-if ($bookmarkExists) {
-    // Remove the bookmark
-    $stmt = $pdo->prepare("DELETE FROM bookmarks WHERE user_id = :user_id AND game_id = :game_id");
-    $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
-    echo json_encode(['success' => true, 'action' => 'removed']);
-} else {
-    // Add the bookmark
-    $stmt = $pdo->prepare("INSERT INTO bookmarks (user_id, game_id) VALUES (:user_id, :game_id)");
-    $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
-    echo json_encode(['success' => true, 'action' => 'added']);
+// Fetch all games for the slider
+try {
+    $stmt = $pdo->query("SELECT id, title, platform, rating, image_url FROM games");
+    $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Database query failed: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -45,37 +15,10 @@ if ($bookmarkExists) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Game Grid</title>
-  <link href="CSS/style2.css" rel="stylesheet" type="text/css" />
+  <link href="style2.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-
- 
-
-    .view-toggle {
-    display: flex;
-    gap: 1rem;
-    margin-left: auto;
-  }
-
-  .view-toggle button {
-    background: #1e1e1e;
-    color: #00ffc8;
-    border: 2px solid #00ffc8;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .view-toggle button.active {
-    background: #00ffc8;
-    color: #1e1e1e;
-  }
-  /* Fix margin typo */
-  .hero-meta {
-    margin-bottom: 0.5rem;
-  }
-     /* Hero Section */
+    /* Hero Section */
     #hero-section {
       position: relative;
       width: 100vw;
@@ -84,13 +27,11 @@ if ($bookmarkExists) {
       overflow: hidden;
       margin-bottom: 2rem;
     }
-
     .hero-slider {
       width: 100%;
       height: 100%;
       position: relative;
     }
-
     .hero-background {
       position: absolute;
       width: 100%;
@@ -100,7 +41,6 @@ if ($bookmarkExists) {
       z-index: 1;
       transition: background-image 0.5s ease-in-out;
     }
-
     .hero-content {
       position: absolute;
       bottom: 20%;
@@ -112,7 +52,6 @@ if ($bookmarkExists) {
       z-index: 2;
       display: block;
     }
-
     .hero-content h2 {
       font-size: 3.5rem;
       margin: 0 0 0.5rem 0;
@@ -120,20 +59,17 @@ if ($bookmarkExists) {
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
-
     .hero-meta {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 1rem;
-      margin-bottom:0.5rem ;}
-
+      margin-bottom: 0.5rem;
+    }
     .platform-tag, .rating {
       font-size: 1.2rem;
       font-weight: bold;
     }
-
     .hero-content p {
       font-size: 1.4rem;
       margin: 0 0 2rem 0;
@@ -142,7 +78,6 @@ if ($bookmarkExists) {
       margin-right: auto;
       line-height: 1.4;
     }
-
     .read-btn {
       display: inline-block;
       padding: 1rem 2rem;
@@ -154,12 +89,10 @@ if ($bookmarkExists) {
       font-size: 1.1rem;
       transition: all 0.3s ease;
     }
-  
     .read-btn:hover {
       background: #00e6b8;
       transform: translateY(-2px);
     }
-
     /* Slider Controls */
     .slider-controls {
       position: absolute;
@@ -173,10 +106,8 @@ if ($bookmarkExists) {
       cursor: pointer;
       z-index: 3;
     }
-
     .slider-controls.left { left: 2rem; }
     .slider-controls.right { right: 2rem; }
-
     .slider-dots {
       position: absolute;
       bottom: 10%;
@@ -187,7 +118,6 @@ if ($bookmarkExists) {
       gap: 1rem;
       z-index: 3;
     }
-
     .dot {
       width: 12px;
       height: 12px;
@@ -197,40 +127,32 @@ if ($bookmarkExists) {
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .dot.active {
       background: white;
       transform: scale(1.2);
     }
-
     /* Responsive Adjustments */
     @media (max-width: 768px) {
       #hero-section {
         height: 70vh;
       }
-      
       .hero-content {
         padding: 1rem;
         bottom: 15%;
       }
-      
       .hero-content h2 {
         font-size: 2.5rem;
       }
-      
       .hero-content p {
         font-size: 1.1rem;
         margin-bottom: 1.5rem;
       }
-      
       .platform-tag, .rating {
         font-size: 1rem;
       }
-      
       .slider-controls {
         padding: 0.5rem;
       }
-      
       .read-btn {
         padding: 0.6rem 1rem;
         font-size: 0.8rem;
@@ -239,22 +161,8 @@ if ($bookmarkExists) {
   </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <h1 class="logo">Game Grid</h1>
-      <button class="menu-toggle" aria-label="Toggle menu">☰</button>
-      <form class="search-bar">
-        <input type="text" placeholder="Search...">
-      </form>
-      <ul class="nav-links">
-        <li><a href="index.php">Home</a></li>
-        <li><a href="reviews.php">Reviews</a></li>
-        <li><a href="profile.php">Profile</a></li>
-        <li><a href="login.php" class="btn" id="loginBtn">Login</a></li>
-      </ul>
-    </nav>
-  </header>
-  </header>
+   <!-- Header Section -->
+ <?php include 'header.php'; ?>
 
   <main>
     <!-- Hero Slider Section -->
@@ -262,18 +170,14 @@ if ($bookmarkExists) {
       <article class="hero-slider">
         <!-- Background Image -->
         <div class="hero-background"></div>
-        
-        <!-- Slide Content Empty container -->
         <div class="hero-content">
-          <h2></h2>
+          <h2 id="hero-title">Loading...</h2>
           <div class="hero-meta">
-            <span class="platform-tag"></span>
-            <span class="rating"></span>
+            <span class="platform-tag" id="hero-platform">Platform: Loading...</span>
+            <span class="rating" id="hero-rating">Rating: Loading...</span>
           </div>
-          <p></p>
-          <a href="#" class="read-btn"></a>
         </div>
-        
+
         <!-- Slider Controls -->
         <button class="slider-controls left" aria-label="Previous slide">
           <i class="fas fa-chevron-left"></i>
@@ -281,13 +185,9 @@ if ($bookmarkExists) {
         <button class="slider-controls right" aria-label="Next slide">
           <i class="fas fa-chevron-right"></i>
         </button>
-        
+
         <!-- Slider Dots -->
-        <nav class="slider-dots" aria-label="Slider navigation">
-          <button class="dot active" aria-label="Slide 1"></button>
-          <button class="dot" aria-label="Slide 2"></button>
-          <button class="dot" aria-label="Slide 3"></button>
-        </nav>
+        <nav class="slider-dots" aria-label="Slider navigation" id="sliderDots"></nav>
       </article>
     </section>
 
@@ -295,33 +195,111 @@ if ($bookmarkExists) {
     <section class="platform-section">
       <h2>Browse by Platform</h2>
       <nav class="platform-grid">
-        <a href="#" class="platform-btn">PS5</a>
-        <a href="#" class="platform-btn">Nintendo</a>
-        <a href="#" class="platform-btn">Xbox</a>
-        <a href="#" class="platform-btn">PS4</a>
-        <a href="#" class="platform-btn">PC</a>
+        <button class="platform-btn active" data-platform="">All</button>
+        <button class="platform-btn" data-platform="PS5">PS5</button>
+        <button class="platform-btn" data-platform="Nintendo">Nintendo</button>
+        <button class="platform-btn" data-platform="Xbox">Xbox</button>
+        <button class="platform-btn" data-platform="PS4">PS4</button>
+        <button class="platform-btn" data-platform="PC">PC</button>
       </nav>
     </section>
 
     <!-- Trending Reviews -->
-    <section id="trending-reviews">
-      <div class="section-header">
-        <h2>Trending Reviews</h2>
-        <div class="view-toggle">
-          <button id="gridView" class="active">Grid</button>
-          <button id="listView">List</button>
-        </div>
+    <div class="section-header">
+      <h2>Trending Reviews</h2>
+      <div class="view-toggle">
+        <button id="gridView" class="active">Grid</button>
+        <button id="listView">List</button>
       </div>
-      <div id="reviewsContainer" class="reviews-container grid-view"></div>
-    </section>
+    </div>
+    <div id="reviewsContainer" class="reviews-container grid-view">
+      <?php
+      try {
+        // Query to fetch trending games
+        $stmt = $pdo->query("SELECT * FROM games ORDER BY rating DESC LIMIT 6");
+        $gamesTrending = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($gamesTrending) > 0) {
+          foreach ($gamesTrending as $game) {
+            ?>
+            <div class="review-card" data-game-id="<?php echo htmlspecialchars($game['id']); ?>">
+              <img src="<?php echo htmlspecialchars($game['image_url']); ?>" alt="<?php echo htmlspecialchars($game['title']); ?>">
+              <h3><?php echo htmlspecialchars($game['title']); ?></h3>
+              <p>Platform: <?php echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php echo htmlspecialchars($game['rating']); ?>/10</p>
+              <button class="bookmark-btn" data-game-id="<?php echo $game['id']; ?>">Bookmark</button>
+            </div>
+            <?php
+          }
+        } else {
+          echo '<p>No trending reviews available at the moment.</p>';
+        }
+      } catch (PDOException $e) {
+        echo '<p>Error loading trending reviews: ' . htmlspecialchars($e->getMessage()) . '</p>';
+      }
+      ?>
+    </div>
   </main>
 
-  <footer>
-    <p>© 2024 Game Grid. All rights reserved.</p>
-    <a href="aboutus.html">About Us</a>
-  </footer>
+  <!-- Footer -->
+  <?php include 'footer.php'; ?>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Convert PHP games array to JavaScript
+      const games = <?php echo json_encode($games); ?>;
+
+      if (games.length === 0) {
+        console.error("No games available for the slider.");
+        return;
+      }
+
+      let currentIndex = 0;
+
+      // DOM Elements
+      const heroBackground = document.querySelector('.hero-background');
+      const heroTitle = document.getElementById('hero-title');
+      const heroPlatform = document.getElementById('hero-platform');
+      const heroRating = document.getElementById('hero-rating');
+      const sliderDots = document.getElementById('sliderDots');
+
+      // Function to update the hero section
+      function updateHero(index) {
+        const game = games[index];
+        heroBackground.style.backgroundImage = `url('${game.image_url}')`;
+        heroTitle.textContent = game.title;
+        heroPlatform.textContent = `Platform: ${game.platform}`;
+        heroRating.textContent = `Rating: ${game.rating}/10`;
+
+        // Update active dot
+        const dots = sliderDots.querySelectorAll('.dot');
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+      }
+
+      // Initialize slider dots
+      games.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.setAttribute('aria-label', `Slide ${index + 1}`);
+        dot.addEventListener('click', () => {
+          currentIndex = index;
+          updateHero(currentIndex);
+        });
+        sliderDots.appendChild(dot);
+      });
+
+      // Button Event Listeners
+      document.querySelector('.slider-controls.left').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + games.length) % games.length;
+        updateHero(currentIndex);
+      });
+
+      document.querySelector('.slider-controls.right').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % games.length;
+        updateHero(currentIndex);
+      });
+
+      // Initialize the slider with the first game
+      updateHero(currentIndex);
+    });
+  </script>
 </body>
-</html> 
-
+</html>

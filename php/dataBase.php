@@ -1,7 +1,7 @@
 <?php // connecting to mySQL server in php and the other php files as well
 $db_server = "localhost";
 $db_user = "root";
-$db_pass = ""; // Try "root" if empty doesn't work
+$db_pass = "root"; // Try "root" if empty doesn't work
 $db_name = "gamegrid"; // Fixed typo
 
 // Remove the duplicate connection attempt
@@ -37,12 +37,12 @@ try {
 require_once 'db.php';
 
 // Check if the user is logged in
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(['success' => false, 'message' => 'User not logged in']);
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['user_id'])) {
+//     http_response_code(401); // Unauthorized
+//     echo json_encode(['success' => false, 'message' => 'User not logged in']);
+//     exit;
+// }
 
 // Get POST data
 $userId = $_SESSION['user_id'];
