@@ -157,7 +157,20 @@ try {
         padding: 0.6rem 1rem;
         font-size: 0.8rem;
       }
+      
     }
+    .game-card { /* Style for the browsed games */
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: block; /* Initially show all */
+            max-width: 50%;
+            display: none;
+        }
+        .game-card img {
+            max-width: 100%;
+            height: auto;
+        }
   </style>
 </head>
 <body>
@@ -193,16 +206,36 @@ try {
 
     <!-- Platform Browse Section -->
     <section class="platform-section">
-      <h2>Browse by Platform</h2>
-      <nav class="platform-grid">
-        <button class="platform-btn active" data-platform="">All</button>
-        <button class="platform-btn" data-platform="PS5">PS5</button>
-        <button class="platform-btn" data-platform="Nintendo">Nintendo</button>
-        <button class="platform-btn" data-platform="Xbox">Xbox</button>
-        <button class="platform-btn" data-platform="PS4">PS4</button>
-        <button class="platform-btn" data-platform="PC">PC</button>
-      </nav>
-    </section>
+
+
+<nav class="platform-grid">
+
+    <button class="platform-btn " data-platform="">All</button>
+
+    <button class="platform-btn" data-platform="PS5">PS5</button>
+
+    <button class="platform-btn" data-platform="Nintendo">Nintendo</button>
+
+    <button class="platform-btn" data-platform="Xbox">Xbox</button>
+
+    <button class="platform-btn" data-platform="PS4">PS4</button>
+
+    <button class="platform-btn" data-platform="PC">PC</button>
+
+</nav>
+
+</section>
+    <section class="browse-games-section">
+            <div id="allGamesContainer" class="games-container grid-view">
+                <?php foreach ($games as $game): ?>
+                    <div class="game-card" data-game-id="<?php echo htmlspecialchars($game['id']); ?>" data-platform="<?php echo htmlspecialchars($game['platform'] ?? ''); ?>">
+                        <img src="<?php echo htmlspecialchars($game['image_url']); ?>" alt="<?php echo htmlspecialchars($game['title']); ?>">
+                        <h3><?php echo htmlspecialchars($game['title']); ?></h3>
+                        <p>Platform: <?php echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php echo htmlspecialchars($game['rating']); ?>/10</p>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
 
     <!-- Trending Reviews -->
     <div class="section-header">
@@ -244,62 +277,94 @@ try {
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Convert PHP games array to JavaScript
-      const games = <?php echo json_encode($games); ?>;
+  // Convert PHP games array to JavaScript
+  const games = <?php echo json_encode($games); ?>;
+  if (games.length === 0) {
+    console.error("No games available for the slider.");
+    return;
+  }
 
-      if (games.length === 0) {
-        console.error("No games available for the slider.");
-        return;
-      }
+  let currentIndex = 0;
 
-      let currentIndex = 0;
+  // DOM Elements
+  const heroBackground = document.querySelector('.hero-background');
+  const heroTitle = document.getElementById('hero-title');
+  const heroPlatform = document.getElementById('hero-platform');
+  const heroRating = document.getElementById('hero-rating');
+  const sliderDots = document.getElementById('sliderDots');
 
-      // DOM Elements
-      const heroBackground = document.querySelector('.hero-background');
-      const heroTitle = document.getElementById('hero-title');
-      const heroPlatform = document.getElementById('hero-platform');
-      const heroRating = document.getElementById('hero-rating');
-      const sliderDots = document.getElementById('sliderDots');
+  // Function to update the hero section
+  function updateHero(index) {
+    const game = games[index];
+    heroBackground.style.backgroundImage = `url('${game.image_url}')`;
+    heroTitle.textContent = game.title;
+    heroPlatform.textContent = `Platform: ${game.platform}`;
+    heroRating.textContent = `Rating: ${game.rating}/10`;
 
-      // Function to update the hero section
-      function updateHero(index) {
-        const game = games[index];
-        heroBackground.style.backgroundImage = `url('${game.image_url}')`;
-        heroTitle.textContent = game.title;
-        heroPlatform.textContent = `Platform: ${game.platform}`;
-        heroRating.textContent = `Rating: ${game.rating}/10`;
+    // Update active dot
+    const dots = sliderDots.querySelectorAll('.dot');
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+  }
 
-        // Update active dot
-        const dots = sliderDots.querySelectorAll('.dot');
-        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-      }
-
-      // Initialize slider dots
-      games.forEach((_, index) => {
-        const dot = document.createElement('button');
-        dot.className = 'dot';
-        dot.setAttribute('aria-label', `Slide ${index + 1}`);
-        dot.addEventListener('click', () => {
-          currentIndex = index;
-          updateHero(currentIndex);
-        });
-        sliderDots.appendChild(dot);
-      });
-
-      // Button Event Listeners
-      document.querySelector('.slider-controls.left').addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + games.length) % games.length;
-        updateHero(currentIndex);
-      });
-
-      document.querySelector('.slider-controls.right').addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % games.length;
-        updateHero(currentIndex);
-      });
-
-      // Initialize the slider with the first game
+  // Initialize slider dots
+  games.forEach((_, index) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot';
+    dot.setAttribute('aria-label', `Slide ${index + 1}`);
+    dot.addEventListener('click', () => {
+      currentIndex = index;
       updateHero(currentIndex);
     });
+    sliderDots.appendChild(dot);
+  });
+
+  // Button Event Listeners
+  document.querySelector('.slider-controls.left').addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + games.length) % games.length;
+    updateHero(currentIndex);
+  });
+
+  document.querySelector('.slider-controls.right').addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % games.length;
+    updateHero(currentIndex);
+  });
+
+  // Initialize the slider with the first game
+  updateHero(currentIndex);
+
+  // Platform Buttons Logic
+  const platformButtons = document.querySelectorAll('.platform-btn');
+  const allGamesContainer = document.getElementById('allGamesContainer');
+  const allGameCards = allGamesContainer.querySelectorAll('.game-card');
+
+  // Initially hide all game cards
+  allGameCards.forEach(card => {
+    card.style.display = 'none';
+  });
+
+  platformButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      // Skip the "search button" or any button without a data-platform attribute
+      if (!this.hasAttribute('data-platform')) return;
+
+      const selectedPlatform = this.getAttribute('data-platform');
+
+      // Update active button state
+      platformButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+
+      allGameCards.forEach(card => {
+        const cardPlatform = card.getAttribute('data-platform');
+        // Show card if the selected platform is "All" or matches the card's platform
+        if (selectedPlatform === "" || cardPlatform === selectedPlatform) {
+          card.style.display = 'block'; // Make the card visible
+        } else {
+          card.style.display = 'none'; // Hide the card
+        }
+      });
+    });
+  });
+});
   </script>
 </body>
 </html>

@@ -63,11 +63,11 @@ if (isset($_SESSION['user_id'])) {
   height: 2px;
   background-color: #00e6b8; /* Slightly darker cyan for underline */
 }
-
+/** ======================================NEIL THIS WAS THE PROBLEM take it out <---------------------------
 .tab-content {
   display: none;
 }
-
+*/
 .tab-content.active {
   display: block;
 }
@@ -186,7 +186,7 @@ input[type="checkbox"] + label {
       <article class="tab-content" id="login-tab">
         <h1>Login to Game Grid</h1>
         <p>Access your profile and engage with the gaming community.</p>
-        <form id="loginForm" method="POST" action="index.php">
+        <form id="loginForm" method="POST" action="auth.php"><!-- neil here  -->
           <input type="hidden" name="login" value="1">
           <label for="loginEmail">Email</label>
           <input type="email" id="loginEmail" name="email" placeholder="Enter your email" required>
@@ -203,7 +203,7 @@ input[type="checkbox"] + label {
       <article class="tab-content" id="register-tab" style="display: none;">
         <h2>Create Your Gaming Profile</h2>
         <p>Join thousands of gamers on Game Grid.</p>
-        <form id="registerForm" method="POST" action="index.php">
+        <form id="registerForm" method="POST" action="auth.php"><!-- neil here  -->
           <input type="hidden" name="register" value="1">
           <label for="fullName">Full Name</label>
           <input type="text" id="fullName" name="full_name" placeholder="Enter your full name" required>

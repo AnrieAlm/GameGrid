@@ -17,9 +17,10 @@ require 'db.php'; // Database connection
         <nav class="navbar">
             <h1 class="logo">Game Grid</h1>
             <button class="menu-toggle" aria-label="Toggle menu">☰</button>
-            <form class="search-bar">
-                <input type="text" placeholder="Search games...">
-            </form>
+            <form method="GET" action="search.php">
+    <input type="text" name="query" placeholder="Enter your search term" required>
+    <button type="submit" name="search_button" value="1">Search</button>
+</form>            
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="reviews.php">Reviews</a></li>
