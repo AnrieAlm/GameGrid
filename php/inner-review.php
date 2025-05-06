@@ -131,6 +131,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 } else {
     echo '<p>Invalid review ID.</p>';
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -230,6 +231,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
       cursor: pointer;
     }
 
+
+
     /* Video Section */
 .video-section {
   margin-top: 20px;
@@ -243,92 +246,138 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   margin: 0 auto; /* Center the iframe horizontally */
 }
 
-/* Comments Section */
 .comments-section {
-  margin-top: 20px;
-  text-align: center; /* Center the section */
-}
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 1rem;
+      background-color: #2a2a2a;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* Unified 5-column grid */
+      gap: 1rem;
+    }
 
-.comment-form {
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px; /* Add spacing between elements in the form */
-}
+    .comments-header {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
 
-.comment-form label {
-  display: inline-block;
-  vertical-align: top;
-  margin-right: 10px;
-}
+    .user-avatar-container {
+      grid-column: 1 / 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-.comment-form textarea {
-  width: 100%;
-  height: 100px;
-  resize: vertical;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+    .comment-input-container {
+      grid-column: 2 / -1;
+    }
 
-.comments-container {
-  margin-top: 20px;
-  text-align: left; /* Reset alignment for comments list */
-}
 
-.comment {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #333;
-  border-radius: 5px;
-}
+    .comment-input-container textarea {
+      width: 1000px;
+  height: 80px;
+      resize: vertical;
+      background-color: #444;
+      color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+    }
 
-.comment img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 10px;
-  vertical-align: middle;
-}
 
-.comment strong {
-  font-size: 1.1rem;
-  margin-right: 5px;
-}
-.comment-actions {
-  margin-top: 5px;
-  display: flex;
-  gap: 10px;
-}
+    .submit-button-container {
+      grid-column: span 5;
+      display: flex;
+      justify-content: center;
+    }
 
-.edit-btn, .delete-btn {
+    .submit-button-container button {
+      padding: 10px 20px;
+      background-color: #00ffc8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .submit-button-container button:hover {
+      background-color: #00e6b3;
+    }
+
+    .comments-container {
+      grid-column: span 5;
+    }
+
+
+    .comment {
+      background-color: #2a2a2a;
+      padding: 10px;
+      border-radius: 5px;
+      display: grid;
+      grid-template-columns: 1fr 4fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .comment img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .comment strong {
+      background-color: #ff4d4d;
+      color: white;
+    }
+/* Comment Actions */
+.edit-btn,
+.delete-btn {
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .edit-btn {
-  background-color: #007bff;
+  background-color: #ff9f43;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #ff4d4d;
   color: white;
 }
 
 .edit-btn:hover {
-  background-color: #0056b3;
-}
-
-.delete-btn {
-  background-color: #dc3545;
-  color: white;
+  background-color: #ffbf7f;
 }
 
 .delete-btn:hover {
-  background-color: #a71d2a;
+  background-color: #ff6f6f;
 }
-  </style>
+
+/* Comments Section */
+.comments-section h2 {
+  margin: 1rem 0 0.5rem; /* More specific spacing */
+}
+
+.no-comments {
+  grid-column: span 5;
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px;
+  color: #666;
+  font-style: italic;
+}
+
+
+</style>
+
 </head>
 <?php include 'header.php'; ?>
 
@@ -390,22 +439,44 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   </div>
 </section>
 
-<section class="comments-section">
-  <h2>Comments</h2>
-  <form id="commentForm" class="comment-form" method="POST">
+
+
+
+    <!-- Single Comment Submission Form -->
+    <section class="comments-section">
+  <!-- Comments Header -->
+  <h2 class="comments-header">Comments</h2>
+
+  <!-- Avatar + Textarea + Submit Button (Direct Children) -->
+  <article class="user-avatar-container">
     <label for="commentInput" class="user-avatar">
-      <img src="https://placehold.co/50" alt="User Profile Picture">
+      <img src="https://cdn-icons-png.flaticon.com/128/5663/5663802.png" alt="User Profile Picture">
     </label>
-    <textarea id="commentInput" name="comment" placeholder="Add a comment..." aria-label="Write a comment"></textarea>
+  </article>
+
+  <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?id=<?php echo $review_id; ?>" id="commentForm">
+    <article class="comment-input-container">
+      <textarea id="commentInput" name="comment" placeholder="Add a comment..." aria-label="Write a comment" required></textarea>
+    </article>
+
     <input type="hidden" name="review_id" value="<?php echo htmlspecialchars($review_id); ?>">
-        <button type="submit" id="submitComment" class="btn">Comment</button>
+
+    <article class="submit-button-container">
+      <button type="submit" id="submitComment" class="btn">Comment</button>
+    </article>
   </form>
+
+ 
+ <!-- -->
   <section id="commentsContainer" class="comments-container">
      <?php
     if (!empty($comments)) {
         foreach ($comments as $comment) {
+          echo '<article class="comment">';
             echo '<div class="comment">';
-            echo '<img src="https://placehold.co/50" alt="User Avatar">';
+            echo '<img src="https://cdn-icons-png.flaticon.com/128/5663/5663802.png" alt="User Avatar">';
+            echo '</div>';
+          echo '<div class="comment-text">';
             echo '<p><strong>' . htmlspecialchars($comment['username']) . '</strong>: ';
             if (isset($_GET['edit_comment']) && (int)$_GET['edit_comment'] === $comment['id']) {
               // Show edit form
@@ -428,22 +499,23 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
           echo '<button type="submit" name="delete_comment" class="delete-btn">Delete</button>';
           echo '</form>';
           echo '</div>';
-          echo '</div>';
-            
+          echo '</article>'; // Close the article tag
         }
     } else {
+        echo '<article class="no-comments">';
         echo '<p>No comments yet. Be the first to comment!</p>';
+        echo '</article>';
     }
-    ?> 
+    ?>
   </section>
 </section>
       </section>
-    </section>
+    </section> 
   </main>
 
   <?php
   // Include the footer
-  //include 'footer.php';
+  include 'footer.php'; 
   ?>
   <script src="script.js"></script>
   <script src="review.js"></script>

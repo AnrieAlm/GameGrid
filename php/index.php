@@ -9,6 +9,9 @@ try {
     die("Database query failed: " . $e->getMessage());
 }
 ?>
+<script>
+  const userId = <?php echo isset($_SESSION['user_id']) ? json_encode($_SESSION['user_id']) : 'null'; ?>;
+</script>
 <!DOCTYPE html>
 <html>
 <head>
@@ -80,9 +83,9 @@ try {
     }
     .read-btn {
       display: inline-block;
-      padding: 1rem 2rem;
-      background: #1e1e1e;
-      color: #00ffc8;
+      padding: 0.5rem 1rem;
+      background: #00ffc8;
+      color: #1e1e1e;
       text-decoration: none;
       border-radius: 0.5rem;
       font-weight: bold;
@@ -157,20 +160,62 @@ try {
         padding: 0.6rem 1rem;
         font-size: 0.8rem;
       }
-      
     }
-    .game-card { /* Style for the browsed games */
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            display: block; /* Initially show all */
-            max-width: 50%;
-            display: none;
-        }
-        .game-card img {
-            max-width: 100%;
-            height: auto;
-        }
+
+    .bookmark-btn {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.bookmark-btn:hover {
+  color: gold;
+}
+   /* General Styles for Game Cards */
+/* Game Card Styling */
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #222; /* Dark background for better contrast */
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  transition: transform 0.3s ease;
+  max-width: 300px; /* Fixed maximum width */
+  height: 400px; /* Fixed height */
+}
+
+.game-card:hover {
+  transform: scale(1.02);
+}
+
+/* Image Styling */
+.game-card img {
+  width: 100%; /* Ensure the image spans the full width of the card */
+  height: 200px; /* Fixed height for the image */
+  object-fit: cover; /* Crop the image to fit the container */
+  border-radius: 8px; /* Rounded corners for the image */
+  margin-bottom: 16px; /* Space between image and text */
+}
+
+/* Text Styling */
+.game-card h3 {
+  font-size: 1.5rem;
+  color: white;
+  margin: 0;
+}
+
+.game-card p {
+  font-size: 1rem;
+  color: #ccc;
+  margin: 8px 0;
+}
+  
+
+ 
   </style>
 </head>
 <body>
@@ -228,11 +273,16 @@ try {
     <section class="browse-games-section">
             <div id="allGamesContainer" class="games-container grid-view">
                 <?php foreach ($games as $game): ?>
-                    <div class="game-card" data-game-id="<?php echo htmlspecialchars($game['id']); ?>" data-platform="<?php echo htmlspecialchars($game['platform'] ?? ''); ?>">
-                        <img src="<?php echo htmlspecialchars($game['image_url']); ?>" alt="<?php echo htmlspecialchars($game['title']); ?>">
-                        <h3><?php echo htmlspecialchars($game['title']); ?></h3>
-                        <p>Platform: <?php echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php echo htmlspecialchars($game['rating']); ?>/10</p>
-                    </div>
+                  <div class="game-card" data-game-id="<?php echo htmlspecialchars($game['id']); ?>" data-platform="<?php echo htmlspecialchars($game['platform'] ?? ''); ?>">
+  <img src="<?php echo htmlspecialchars($game['image_url']); ?>" alt="<?php echo htmlspecialchars($game['title']); ?>">
+  <h3><?php echo htmlspecialchars($game['title']); ?></h3>
+  <p>Platform: <?php echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php echo htmlspecialchars($game['rating']); ?>/10</p>
+</div>
+                    <!-- <div class="game-card" data-game-id="<?php //echo htmlspecialchars($game['id']); ?>" data-platform="// echo htmlspecialchars($game['platform'] ?? ''); ?>">
+                        <img src="<?php //echo htmlspecialchars($game['image_url']); ?>" alt="<?php //echo htmlspecialchars($game['title']); ?>">
+                        <h3><?php //echo htmlspecialchars($game['title']); ?></h3>
+                        <p>Platform: <?php //echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php //echo htmlspecialchars($game['rating']); ?>/10</p>
+                    </div> -->
                 <?php endforeach; ?>
             </div>
         </section>
@@ -254,22 +304,31 @@ try {
         if (count($gamesTrending) > 0) {
           foreach ($gamesTrending as $game) {
             ?>
-            <div class="review-card" data-game-id="<?php echo htmlspecialchars($game['id']); ?>">
-              <img src="<?php echo htmlspecialchars($game['image_url']); ?>" alt="<?php echo htmlspecialchars($game['title']); ?>">
-              <h3><?php echo htmlspecialchars($game['title']); ?></h3>
-              <p>Platform: <?php echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php echo htmlspecialchars($game['rating']); ?>/10</p>
-              <button class="bookmark-btn" data-game-id="<?php echo $game['id']; ?>">Bookmark</button>
+            <div class="review-card" data-game-id="<?= htmlspecialchars($game['id']) ?>">
+          <div class="review-hero">
+            <img src="<?= htmlspecialchars($game['image_url']) ?>" alt="<?= htmlspecialchars($game['title']) ?>">
+          </div>
+          <div class="review-content">
+            <h3><?= htmlspecialchars($game['title']) ?></h3>
+            <div class="meta-info">
+              <span class="platform-label"><?= htmlspecialchars($game['platform'] ?? 'N/A') ?></span>
+              <span class="rating"><i class="fas fa-star"></i> <?= htmlspecialchars($game['rating']) ?>/10</span>
+            </div>
+          
+            <button class="bookmark-btn" data-game-id="<?= $game['id'] ?>">☆</button>
+            <a href="inner-review.php?id=<?= $game['id'] ?>" class="read-more">Read More →</a>
+          </div>
             </div>
             <?php
-          }
-        } else {
-          echo '<p>No trending reviews available at the moment.</p>';
-        }
-      } catch (PDOException $e) {
-        echo '<p>Error loading trending reviews: ' . htmlspecialchars($e->getMessage()) . '</p>';
       }
-      ?>
-    </div>
+    } else {
+      echo '<p>No trending reviews available at the moment.</p>';
+    }
+  } catch (PDOException $e) {
+    echo '<p>Error loading trending reviews: ' . htmlspecialchars($e->getMessage()) . '</p>';
+  }
+  ?>
+</div>
   </main>
 
   <!-- Footer -->
@@ -365,6 +424,9 @@ try {
     });
   });
 });
+src="script.js"
   </script>
+ 
 </body>
+
 </html>

@@ -35,13 +35,41 @@ if (!$user) {
   <link rel="stylesheet" href="style2.css">
 </head>
 
+<style>
+  .alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+  </style>
 <body>
   <!-- Header Section: Logo, GameGrid Search, Menu Button -->
   <?php
 // Include the header
 include 'header.php';
-?>
 
+// Display error or success messages
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert error">' . htmlspecialchars($_SESSION['error']) . '</div>';
+    unset($_SESSION['error']);
+}
+if (isset($_SESSION['success'])) {
+    echo '<div class="alert success">' . htmlspecialchars($_SESSION['success']) . '</div>';
+    unset($_SESSION['success']);
+}
+?>
   <main>
     <!-- Profile Section -->
     <section class="profile-container" id="p_card">
@@ -68,7 +96,10 @@ include 'header.php';
 
         <!-- Edit Profile Button -->
         <article class="button-container">
-          <button id="edit-profile-btn" class="btn" aria-label="Edit Profile for <?php echo htmlspecialchars($user['username']); ?>">Edit Profile</button>
+          <!-- In your profile.php -->
+<a href="edit_profile.php" class="btn" id="edit-profile-btn" aria-label="Edit Profile">
+    Edit Profile
+</a>
         </article>
       </article>
     </section>
@@ -77,12 +108,14 @@ include 'header.php';
     <section class="form-container" id="p_menu-card">
       <nav>
         <ul class="p_nav list">
-          <li>
+         
+       <!--  <li>
             <a href="#">
               <img src="icons/dashboard_customize_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="Dashboard" width="24" height="24">
               Dashboards
             </a>
-          </li>
+          </li> -->
+
           <li>
             <a href="#">
               <img src="icons/chat_bubble_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="Comments" width="24" height="24">
@@ -90,13 +123,13 @@ include 'header.php';
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="#p_bookmarks-card">
               <img src="icons/bookmarks_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="Bookmarks" width="24" height="24">
               Bookmarks
             </a>
           </li>
           <li>
-            <a href="#">
+            <a href="#profile_form">
               <img src="icons/settings_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="Settings" width="24" height="24">
               Settings
             </a>
@@ -112,9 +145,13 @@ include 'header.php';
     </section>
 
     <!-- Bookmarks Section -->
+    <section class="profile-bookmarks">
+  <h3>Bookmarked Games</h3>
+  <ul class="p_bookmarks-content"></ul>
+<!-- </section>
     <section class="form-container" id="p_bookmarks-card">
       <header class="p_section-header">
-        <h2 id="bookmarks-heading">Your Bookmarks</h2>
+        <h2 id="bookmarks-heading">Your Bookmarks</h2> -->
         <br>
         <hr>
         <br>
@@ -124,7 +161,7 @@ include 'header.php';
       <ul class="p_bookmarks-content">
         <!-- Example bookmark list item -->
         <!-- Dynamically fetch bookmarks from the database if needed -->
-        <li><a href="#">Game Review: Epic Adventure</a></li>
+        <!-- <li><a href="#">Game Review: Epic Adventure</a></li> -->
       </ul>
     </section>
 

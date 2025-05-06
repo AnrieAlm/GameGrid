@@ -1,73 +1,85 @@
 <?php
-require 'init.php'; // if you're using session or other initial config
-require 'db.php';   // database connection
+// Database connection setup
+require 'init.php'; // Start the session
+require 'db.php'; // Database connection
 
-// Check if the request was triggered by the "Search" button
-if (!isset($_GET['search_button'])) {
-    echo "<p>Invalid request. Please use the search form.</p>";
-    exit;
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
 
-// Get the search query
-$query = isset($_GET['query']) ? trim($_GET['query']) : '';
+// Check if the user submitted a search query
+$searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
+if (!empty($searchQuery)) {
+    // Prepare a SQL query to search for games by title
+    $sql = "
+        SELECT g.id, g.title, g.description, g.rating, GROUP_CONCAT(p.name SEPARATOR ', ') AS platforms
+        FROM games g
+        JOIN game_platforms gp ON g.id = gp.game_id
+        JOIN platforms p ON gp.platform_id = p.id
+        WHERE g.title LIKE :query
+        GROUP BY g.id
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['query' => '%' . $searchQuery . '%']);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
-    <link rel="stylesheet" href="style2.css">
     <style>
-        .highlight {
-            background-color: yellow;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .search-form { margin-bottom: 20px; }
+        .game { margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; }
+        .no-results { color: red; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Search Results for "<?php echo htmlspecialchars($query); ?>"</h1>
-        <a href="index.php">← Back to Home</a>
-    </header>
+    <h1>Search for Games</h1>
 
-    <main>
-        <?php
-        if ($query) {
-            // Validate the search query
-            if (strlen($query) < 3) {
-                echo "<p>Please enter a search term with at least 3 characters.</p>";
-            } else {
-                // Prepare and execute a search query
-                $stmt = $pdo->prepare("SELECT * FROM games WHERE LOWER(title) LIKE :search");
-                $stmt->execute(['search' => '%' . strtolower($query) . '%']);
-                $results = $stmt->fetchAll();
+    <!-- Search Form -->
+    <form class="search-form" method="GET" action="search.php" onsubmit="saveSearchQuery()">
+        <input type="text" id="searchInput" name="query" placeholder="Enter game title..." value="<?= htmlspecialchars($searchQuery) ?>" required>
+        <button type="submit">Search</button>
+    </form>
 
-                if ($results) {
-                    echo "<ul class='search-results'>";
-                    foreach ($results as $game) {
-                        echo "<li>";
-                        // Highlight the search term in the title
-                        $highlightedTitle = preg_replace(
-                            '/(' . preg_quote($query, '/') . ')/i',
-                            '<mark class="highlight">$1</mark>',
-                            htmlspecialchars($game['title'])
-                        );
-                        echo "<strong>" . $highlightedTitle . "</strong><br>";
-                        if (isset($game['description'])) {
-                            echo "<small>" . htmlspecialchars($game['description']) . "</small>";
-                        }
-                        echo "</li>";
-                    }
-                    echo "</ul>";
-                } else {
-                    echo "<p>No results found for your search.</p>";
-                }
-            }
-        } else {
-            echo "<p>No search query provided.</p>";
+    <?php if (!empty($searchQuery)): ?>
+        <h2>Search Results for: "<?= htmlspecialchars($searchQuery) ?>"</h2>
+
+        <?php if (!empty($results)): ?>
+            <?php foreach ($results as $game): ?>
+                <div class="game">
+                    <h3><?= htmlspecialchars($game['title']) ?></h3>
+                    <p><?= htmlspecialchars($game['description']) ?></p>
+                    <p><strong>Rating:</strong> <?= htmlspecialchars($game['rating']) ?>/5</p>
+                    <p><strong>Platforms:</strong> <?= htmlspecialchars($game['platforms']) ?></p>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="no-results">No games found matching your search.</p>
+        <?php endif; ?>
+    <?php endif; ?>
+</body>
+<script>
+        // Restore search input from localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('searchInput');
+            const saved = localStorage.getItem('lastSearch');
+            if (input && saved) input.value = saved;
+        });
+
+        function saveSearchQuery() {
+            const input = document.getElementById('searchInput');
+            localStorage.setItem('lastSearch', input.value);
         }
-        ?>
-    </main>
+    </script>
 </body>
 </html>

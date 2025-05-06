@@ -1,5 +1,6 @@
 <?php
 session_start();
+//login and auth
 // Redirect authenticated users to the homepage
 
 if (isset($_SESSION['user_id'])) {
@@ -17,10 +18,11 @@ if (isset($_SESSION['user_id'])) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Authentication - Game Grid</title>
-  <link href="style2.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="style2.css"> <!-- External CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-      .alert {
+     
+     .alert {
     padding: 10px;
     margin-bottom: 15px;
     border-radius: 5px;
@@ -49,9 +51,7 @@ if (isset($_SESSION['user_id'])) {
   transition: color 0.3s ease;
 }
 
-.tab-btn.active {
-  color: #00ffc8; /* Bright cyan for active tab */
-}
+
 
 .tab-btn.active::after {
   content: '';
@@ -61,7 +61,7 @@ if (isset($_SESSION['user_id'])) {
   transform: translateX(-50%);
   width: 100%;
   height: 2px;
-  background-color: #00e6b8; /* Slightly darker cyan for underline */
+ 
 }
 /** ======================================NEIL THIS WAS THE PROBLEM take it out <---------------------------
 .tab-content {
@@ -125,7 +125,7 @@ form label > a:hover {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #00ff99; /* Bright green for buttons */
+  background-color: #00ffc8; /* Bright green for buttons */
   color: #121212; /* Dark text for contrast */
   border: none;
   border-radius: 5px;
@@ -157,6 +157,8 @@ input[type="checkbox"] + label {
 </head>
 <body>
   <?php
+
+include 'header.php';
   // Display error or success messages if set in session
   if (isset($_SESSION['error'])) {
       echo '<div class="alert error">' . htmlspecialchars($_SESSION['error']) . '</div>';
@@ -166,14 +168,17 @@ input[type="checkbox"] + label {
       echo '<div class="alert success">' . htmlspecialchars($_SESSION['success']) . '</div>';
       unset($_SESSION['success']);
   }
-  ?>
+
   
 
-      <!-- Header Section -->
+  ?>
+       <!-- Header Section -->
 
  <!-- Include the header.php file -->
 
- <?php include 'header.php'; ?>
+ 
+
+
 
 
   <main class="auth-container">
@@ -225,10 +230,7 @@ input[type="checkbox"] + label {
       </article>
     </section>
   </main>
-  <footer>
-    <p>© 2024 Game Grid. All rights reserved.</p>
-    <a href="aboutus.html">About Us</a> 
-  </footer>
+  <?php include 'footer.php'; ?>
   <!-- Embedded JavaScript for Tab Switching -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
