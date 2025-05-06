@@ -1,7 +1,7 @@
 <?php
 
 /* file that helps users to login 
-
+Author:- Neil
 */
 
 session_start();
