@@ -1,6 +1,8 @@
 <?php
 // footer.php
-/* footer file same as header to display footer details */
+/* footer file same as header to display footer details 
+Author:- victor
+*/
 ?>
 <footer>
     <p>© 2024 Game Grid. All rights reserved.</p>

@@ -1,5 +1,6 @@
 <?php
-/* This is the reviews php file for the reviews page that displays the reviews from the database */
+/* This is the reviews php file for the reviews page that displays the reviews from the database
+Author:- Anriel and victor */
 
 // Start session and connect to database
 require 'init.php'; // Starts session

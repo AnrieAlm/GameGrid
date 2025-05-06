@@ -1,5 +1,7 @@
 <?php
-/* file to get bookmarks from the database*/
+/* file to get bookmarks from the database
+Author:- Neil
+*/
 session_start();
 require 'db.php';
 

@@ -1,6 +1,7 @@
 <?php
 
-/* file that helps display profile content and checks if user is logged in or not*/
+/* file that helps display profile content and checks if user is logged in or not
+Author:- Anriel*/
 
 // Start the session to access session variables
 session_start();

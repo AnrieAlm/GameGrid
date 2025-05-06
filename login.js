@@ -1,4 +1,7 @@
 
+/* file that handles all the login javascript functionality in our website. 
+Author:- Neil Joseph */
+
 document.addEventListener('DOMContentLoaded', () => {
     // Tab switching functionality
     const tabBtns = document.querySelectorAll('.tab-btn');

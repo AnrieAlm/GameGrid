@@ -1,6 +1,7 @@
 <?php
 
-/* header file that displays tabs in each page and called as needed in every page */
+/* header file that displays tabs in each page and called as needed in every page 
+Author:- victor*/
 
 require 'init.php'; // Start the session
 require 'db.php'; // Database connection

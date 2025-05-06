@@ -1,6 +1,8 @@
 <?php
 
-/* file that helps manage comments and the CRUD feature in comments respectively updting in database */
+/* file that helps manage comments and the CRUD feature in comments respectively updting in database
+Author:- victor
+*/
 
 // Include database credentials (optional if already defined in game_grid.php)
 include 'includes/game_grid.php'; // Ensure this file contains your database credentials

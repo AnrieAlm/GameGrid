@@ -1,6 +1,7 @@
 <?php
 
-/* file that helps users to register*/
+/* file that helps users to register
+Author:- victor*/
 
 session_start();
 ?>

@@ -1,4 +1,8 @@
+/* file that handles the reveiw javascript functionalities in our website. 
+Author:- Neil Joseph */
+
 document.addEventListener('DOMContentLoaded', () => {
+  
   // Get the review ID from the URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const reviewId = parseInt(urlParams.get('id'));

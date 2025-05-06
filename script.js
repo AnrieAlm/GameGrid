@@ -1,3 +1,7 @@
+/* file that handles all the javascript functionalities in our website. contains multiple functionalities
+Author:- Neil Joseph */
+
+
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize userId from PHP session
   //const userId = <?php echo isset($_SESSION['user_id']) ? json_encode($_SESSION['user_id']) : 'null'; ?>;

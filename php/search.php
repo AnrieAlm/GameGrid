@@ -1,5 +1,6 @@
 <?php
-/* This is the file for the search page that displays the search content and helps to search games by bringing content from database*/
+/* This is the file for the search page that displays the search content and helps to search games by bringing content from database
+Author:- Anriel */
 
 // Database connection setup
 require 'init.php'; // Start the session

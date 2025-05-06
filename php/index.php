@@ -1,6 +1,8 @@
 <?php
 
-/* home page file that displays the different reviews, search, menu bars, filter  */
+/* home page file that displays the different reviews, search, menu bars, filter  
+Author:- Anriel, Neil and Victor
+*/
 
 require_once 'db.php';
 

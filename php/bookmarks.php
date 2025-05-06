@@ -1,6 +1,8 @@
 <?php
 
-/* file to help save bookmarks in databse */
+/* file to help save bookmarks in databse 
+Author:- victor
+*/
 
 // bookmark.php
 
