@@ -1,4 +1,6 @@
 <?php
+/* This is the file for the search page that displays the search content and helps to search games by bringing content from database*/
+
 // Database connection setup
 require 'init.php'; // Start the session
 require 'db.php'; // Database connection

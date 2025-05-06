@@ -1,5 +1,8 @@
 
 <?php
+
+/* file that helps change password in profile */
+
 // Start a session to access user data stored in the session
 session_start();
 

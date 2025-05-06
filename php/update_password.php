@@ -1,4 +1,5 @@
 <?php
+/* file that helps users to update their password in profile*/
 session_start();
 
 // Check if user is logged in

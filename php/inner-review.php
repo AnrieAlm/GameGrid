@@ -1,4 +1,5 @@
 <?php
+/*inner review file that displays specific reviews from the databse */
 session_start(); // Start the session at the top of the file
 $user_id = $_SESSION['user_id'] ?? 1; // Use the logged-in user's ID or a default value
 require 'init.php'; // Start the session

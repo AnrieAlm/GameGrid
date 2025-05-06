@@ -1,4 +1,7 @@
 <?php
+
+/* about us file containing our details */
+
 // Include the database connection file
 require_once 'db.php';
 

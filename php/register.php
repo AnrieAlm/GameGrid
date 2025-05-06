@@ -1,4 +1,7 @@
 <?php
+
+/* file that helps users to register*/
+
 session_start();
 ?>
 <!DOCTYPE html>

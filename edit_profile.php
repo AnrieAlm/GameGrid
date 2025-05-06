@@ -1,4 +1,7 @@
 <?php
+
+/* file that helps users to edit profile details from profile*/
+
 session_start();
 require 'db.php'; // Connect to your database
 

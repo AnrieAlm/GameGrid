@@ -1,201 +1,292 @@
-# GameGrid
-Gaming Review Website for SEWA
+---
+
+#  GameGrid
+
+A dynamic and responsive game review website built using HTML, CSS, JavaScript, PHP, and MySQL.
+
+> Developed as a group project for the SEWA module at Griffith College Dublin.
+
+---
+
+##  Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Database Structure](#database-structure)
+- [CRUD Operations](#crud-operations)
+- [Extra Features](#extra-features)
+- [Responsive Design](#responsive-design)
+- [Team Contributions](#team-contributions)
+- [File Structure](#file-structure)
+- [Future Improvements](#future-improvements)
+- [References](#references)
+
+---
+
+##  Overview
+
+GameGrid is a fully functional game review platform where users can:
+
+- Explore trending games
+- Create an account & log in
+- Bookmark their favorite titles
+- View detailed reviews
+- Personalize their profile
+- Switch between dark/light modes
+
+---
+
+##  Features
+
+-  User authentication (Login, Register, Logout)
+-  Game CRUD (Create, Read, Update, Delete) using PHP/MySQL
+-  Responsive design with dark mode toggle
+-  Search by game title
+-  Bookmark favorite games (stored locally)
+-  Profile page and preferences
+-  Grid/List toggle for viewing reviews
+-  Hero slider for featured games
+
+---
+
+##  Tech Stack
+
+| Layer        | Technology                    |
+|--------------|-------------------------------|
+| Frontend     | HTML, CSS, JavaScript         |
+| Backend      | PHP                           |
+| Database     | MySQL                         |
+| Hosting      | Online server (URL TBD)       |
+| Versioning   | Git (local)                   |
+
+---
+
+##  Getting Started
+
+### 1. Clone the Repo
+
+bash
+git clone https://github.com/your-username/gamegrid.git
+cd gamegrid
 
 
-# Authors 
+### 2. Set Up the Database
 
-# Team Members:
-   # • Name 1: [Neil Joseph], [3168101]
-   # • Name 2: [Victor Adisa ], [3166231]
-   # • Name 3: [Anriel Almeida], [3168178]
+Create a MySQL database a schema (export from phpMyAdmin or use provided .sql file):
 
- 
-# SEWA - Assignment 3: Server-side Components Documentation
-Table of Contents
-    1. Project Overview
-    2. Implementation Details
-        a. Templating
-        b. Users Management
-        c. CRUD Operations
-        d. Validation (Server-Side)
-        e. Coding Standards
-    3. Division of Work
-    4. Deployment
-    5. Extra Features
-    6. Readme.md
-    7. Coversheet
-
-Note: the Database name:game_grid, username game_grid and password: game_grid
+sql
+CREATE DATABASE game_grid;
+USE game_grid;
 
 
-# 1. Project Overview
-Application Name:
-GameGrid
-A dynamic web application designed to manage and display video game information. Users can browse games, view trending reviews, bookmark their favourite games, and interact with the database through CRUD operations.
-Key Features:
-    • Hero Slider: Dynamically fetches game data for the hero section.
-    • Search Functionality: Allows users to search for games by title.
-    • Bookmarking: Local storage-based bookmarking functionality for user preferences.
-    • Trending Reviews: Displays popular games with ratings and platform details.
-    • Responsive Design: Ensures compatibility across devices using CSS media queries.
+Add user:
 
-# 2. Implementation Details
-Templating
-The project uses PHP include statements to modularize the codebase. For example:
-<?php include 'header.php'; ?>
-<?php include 'footer.php'; ?>
- 
-This ensures separation of concerns and makes the code easier to maintain. The header and footer are reused across multiple pages, reducing redundancy.
-Users Management
-    • Session Management: The $_SESSION object is used to maintain user-specific states, such as login status and preferences.
-    • Database Integration: User data is stored in a MySQL database. Each user can retrieve their previously stored data, such as bookmarks or game preferences.
-CRUD Operations
-Create:
-    • Games are added to the database via a form submission handled by PHP.
-    • Example SQL query for adding a new game:$stmt = $pdo->prepare("INSERT INTO games (title, rating, image_url) VALUES (?, ?, ?)");
-$stmt->execute([$title, $rating, $image_url]);
- 
-Read:
-    • Fetching game data from the database:$stmt = $pdo->query("SELECT * FROM games");
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    echo "Game: " . htmlspecialchars($row['title']) . "<br>";
-}
- 
-Update:
-    • Updating game details based on user input:$stmt = $pdo->prepare("UPDATE games SET title = ?, rating = ? WHERE id = ?");
-$stmt->execute([$new_title, $new_rating, $game_id]);
- 
-Delete:
-    • Removing a game from the database:$stmt = $pdo->prepare("DELETE FROM games WHERE id = ?");
-$stmt->execute([$game_id]);
- 
-Validation (Server-Side)
-    • Form data is validated using PHP to ensure correctness and prevent malicious inputs.
-    • Example validation:if (empty($_POST['title'])) {
-    die("Title is required.");
-}
-if (!is_numeric($_POST['rating'])) {
-    die("Rating must be a number.");
-}
- 
-Search Functionality
-    • A search query is retrieved from the $_GET['query'] parameter and sanitized using trim() to remove unnecessary whitespace.
-    • Prepared statements are used to securely query the database:$stmt = $pdo->prepare("SELECT * FROM games WHERE title LIKE :search");
-$stmt->execute(['search' => "%$query%"]);
- 
-    • Results are displayed dynamically, with proper escaping of special characters using htmlspecialchars().
-Hero Slider
-    • The hero slider dynamically fetches game data from the database:$sqlHero = "SELECT * FROM games LIMIT 1";
-$resultHero = $pdo->query($sqlHero);
- 
-    • The background image, title, and rating are displayed using PHP:echo '<div class="hero-background" style="background-image: url(\'' . htmlspecialchars($rowHero["image_url"]) . '\');"></div>';
-echo '<h2>' . htmlspecialchars($rowHero["title"]) . '</h2>';
- 
-Bookmarking
-    • Bookmarking is implemented using JavaScript and local storage:const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-button.addEventListener('click', () => {
-    if (bookmarks.includes(gameId)) {
-        bookmarks.splice(bookmarks.indexOf(gameId), 1);
-        button.classList.remove('bookmarked');
-        button.textContent = 'Bookmark';
-    } else {
-        bookmarks.push(gameId);
-        button.classList.add('bookmarked');
-        button.textContent = 'Bookmarked';
-    }
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-});
- 
-Coding Standards
-    • Readability: Code is well-indented and formatted for clarity.
-    • Comments: Every major function and block of code is documented.
-    • Naming Conventions: Variables and functions have meaningful names, e.g., $pdo, fetchGames().
-    • Error Handling: Proper error messages are displayed for invalid inputs or database errors.
-
-# 3. Division of Work
-Summary of Division of Work:
-Work was evenly divided among team members.
-Percentage of Work Completed:
-    • Neil: 35% (Deployment, CRUD Implementation)
-    • Victor: 35% (Users Management, Validation, comments section )
-    • Anriel: 30% (Styling,Templating, SQL setup, profile button , search bar)
-
-# 4. Deployment
-Hosting:
-    • The application is hosted online at [ URL].
-    • The server environment includes PHP and MySQL, .
-Database Setup:
-    • A MySQL database named game_grid was created to store game and user data.
-    • $dbname = 'game_grid'; // Database name
-    • $username = 'game_grid'; // Database username
-    • $password = 'game_grid'; // Database password
-    • In the SQL query window in myPhp admin this query was written to create a user 
-    • SELECT User, Host FROM mysql.user;
-CREATE USER 'game_grid1'@'localhost' IDENTIFIED BY 'game_grid';
-ALTER USER 'game_grid1'@'localhost' IDENTIFIED BY 'new_password';
+sql
+CREATE USER 'game_grid1'@'localhost' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON game_grid.* TO 'game_grid1'@'localhost';
 
-        ◦ games: Stores game details (id, title, rating, image_url).
-        ◦ users: Stores user credentials and preferences.
 
-Deployment Steps:
-    1. Export the database schema and data using mysqldump.
-    2. Upload the PHP files and assets to the server.
-    3. Configure the db.php file with the correct database credentials.
+Update /php/db.php with your database credentials.
 
-# 5. Extra Features
-    • Hero Slider: Dynamically fetches game data for the hero section.
-    • Bookmarking: Uses local storage to save user preferences. (tried to make it work)
-    • Responsive Design: CSS media queries ensure compatibility across devices.
-    • Slider Controls: Interactive buttons for navigating the hero slider.
-    • Search Functionality: Allows users to search for games by title.
+---
 
-# 6. Readme.md
-Project Description:
-GameGrid is a dynamic web application built using PHP, MySQL, HTML, and CSS. It allows users to browse games, view reviews, and bookmark their favorites.
-File Structure:
-/root
-  /css
-    style2.css
-  /images
-    hero.jpg
-    game1.jpg
-    game2.jpg
-  /icons
-  /php 
-  db.php
-  header.php
-  footer.php
-  index.php
-  slides.php
-readme.md
-coversheet.pdf
- 
-# Contributions:
-    • Neil: 35% (Deployment, CRUD Implementation)
-    • Victor: 35% (platform filter, Validation, search bar )
-    • Anriel: 30% (Styling,Templating, SQL setup, user management)
+## Database Structure
 
+Database: game_grid
 
-Submission Date:
-18-04-2025
+### Tables:
 
-# References:
-    1. Dani Krossing (2023) 25 | How to Create Sessions in PHP for Beginners | 2023 | Learn PHP Full Course For Beginners . Available at: https://www.youtube.com/watch?v=JAgd_L3GhI0 (Accessed: [17-04-2025]).
+#### users
 
-    2. Dani Krossing (2023) 22 | INSERT INTO Database Using PHP From Your Website! | 2023 | Learn PHP Full Course for Beginners . Available at: https://www.youtube.com/watch?v=IagGGcC95Ig (Accessed: [17-04-2025]).
+| Field       | Type         |
+| ----------- | ------------ |
+| id          | INT (PK)     |
+| username    | VARCHAR(255) |
+| email       | VARCHAR(255) |
+| password    | VARCHAR(255) |
+| preferences | TEXT         |
 
-    3. Dani Krossing (2023) Learn Object Oriented PHP for Beginners | With Examples to Help You Understand! | OOP PHP Tutorial . Available at: https://www.youtube.com/watch?v=yrFr5PMdk2A&amp;t=4s (Accessed: [17-04-2025]).
+#### games
 
-    4. Stack Overflow Contributors (n.d.) PHP Notes for Professionals . Available at: file:///C:/Users/Anriel/Downloads/PHPNotesForProfessionals.pdf (Accessed: [17-04-2025 ]).
-    5. freeCodeCamp.org (n.d.) PHP Programming Language Tutorial - Full Course . Available at: https://www.youtube.com/watch?v=OK_JCtrrv-c (Accessed: [17-04-2025]).
+| Field      | Type         |
+| ---------- | ------------ |
+| id         | INT (PK)     |
+| title      | VARCHAR(255) |
+| rating     | VARCHAR(10)  |
+| image\_url | VARCHAR(255) |
+
+---
+
+##  CRUD Operations (PHP + MySQL)
+
+### Create
+
+php
+$stmt = $pdo->prepare("INSERT INTO games (title, rating, image_url) VALUES (?, ?, ?)");
+$stmt->execute([$title $rating, $image_url]);
 
 
+### Read
+
+php
+$stmt = $pdo->query("SELECT * FROM games");
+while ($row = $stmt->fetch()) {
+    echo htmlspecialchars($row['title']);
+}
 
 
-# Future Enhancement Opportunities  
-We've identified several opportunities for future enhancement: 
-1. Bookmarks saved to turn up on the profile page 
-2. Individual profiles editing 
-3. Admin page to create reviews
-4. Change the UI to look better
+### Update
+
+php
+$stmt = $pdo->prepare("UPDATE games SET title = ?, rating = ? WHERE id = ?");
+$stmt->execute([$new_title, $new_rating, $game_id]);
+
+
+### Delete
+
+php
+$stmt = $pdo->prepare("DELETE FROM games WHERE id = ?");
+$stmt->execute([$game_id]);
+
+
+---
+
+##  Extra Features
+
+*  Hero slider for dynamic homepage banners
+*  Dark mode (toggle switch stored in localStorage)
+*  Game review filtering and search
+*  Bookmark games via localStorage
+*  Dynamic UI interactions via JavaScript
+*  PHP includes for header/footer reusability
+
+---
+
+##  Responsive Design
+
+*  Works on all screen sizes (media queries)
+*  Dark mode with WCAG AA contrast compliance
+*  Intuitive layout using CSS Grid and Flexbox
+*  Focus/hover states for accessibility
+*  Client-side form validation with custom error indicators
+
+---
+
+##  Team Contributions
+CSS and HTML were equally divded among the 3 of us.
+| Name           | Student ID | Contributions                                                                |
+| -------------- | ---------- | ---------------------------------------------------------------------------- |
+| Neil Joseph    | 3168101    | Deployment, login system, CRUD in PHP, JS scripting                          |
+| Victor Adisa   | 3166231    | User registration, validation, platform filtering, comments & review styling |
+| Anriel Almeida | 3168178    | Styling (CSS), PHP templating, SQL setup, profile UI, search bar             |
+
+---
+
+##  File
+
+/gamegrid
+│
+├── /css
+│   └── style2.css
+├── /images
+│   └── hero.jpg, game1.jpg, game2.jpg
+├── /icons
+│
+├── /php
+│   ├── db.php
+│   ├── header.php
+│   ├── footer.php
+│   ├── slides.php
+│   ├── index.php
+│   ├── aboutus.php
+│   ├── account_settings.php
+│   ├── auth.php
+│   ├── comments.php
+│   ├── dataBase.php
+│   ├── formhandler.php
+│   ├── inner-review.php
+│   ├── search.php
+│   ├── login.php
+│   ├── register.php
+│   ├── slides.php
+│   ├── init.php
+│   ├── edit_profile.php
+│   ├── logout.php
+│   ├── change_password.php
+│   ├── profile.php
+│   ├── test_db.php
+│   ├── update_password.php
+│
+├── login.js
+├── script.js
+├── review.js
+├── README.md
+├── coversheet.pdf
+├── style2.css
+
+
+
+---
+
+##  Future Improvements
+
+- Filter reviews by platform (PS5, PC, etc.)
+-  Editable profile with user data
+-  Admin panel for managing reviews
+-  Email-based password reset
+-  Convert bookmarks to user-specific database table
+-  Improve mobile UI further
+
+---
+
+##  References
+
+W3Schools (2024) SQL Tutorial. Available at: https://www.w3schools.com/sql/ (Accessed: 6 May 2025). 
+
+Learned how to use the SELECT statement with ORDER BY and LIMIT, applied in PHP to fetch top trending games. 
+
+Understood SQL syntax and database querying. 
+
+Stack Overflow (2024) Stack Overflow – Where Developers Learn, Share, & Build Careers. Available at: https://stackoverflow.com/ (Accessed: 6 May 2025). 
+
+Found a solution for a PDOException error handling block, used to wrap PHP queries in a try...catch block. 
+
+Utilized community-driven solutions for specific coding problems. 
+
+FreeCodeCamp (2024) Learn to Code — For Free. Available at: https://www.freecodecamp.org/ (Accessed: 6 May 2025). 
+
+Learned about responsive design techniques using media queries for mobile-friendly interfaces. 
+
+Understood how to use semantic HTML5 tags to improve accessibility and structure. 
+
+Krossing, D. (2023) 25 | How to Create Sessions in PHP for Beginners | 2023 | Learn PHP Full Course For Beginners. Available at: https://www.youtube.com/watch?v=JAgd_L3GhI0 (Accessed: 17 April 2025). 
+
+Learned how to initiate and manage $_SESSION in PHP to persist user login state across pages. 
+
+Understood the importance of session_start() placement at the beginning of PHP files. 
+
+Krossing, D. (2023) 22 | INSERT INTO Database Using PHP From Your Website! | 2023 | Learn PHP Full Course for Beginners. Available at: https://www.youtube.com/watch?v=IagGGcC95Ig (Accessed: 17 April 2025). 
+
+Learned how to safely insert form data into a database using prepared statements with PDO. 
+
+Understood the correct structure of using $_POST to retrieve form values and bind them into a query. 
+
+Krossing, D. (2023) Learn Object Oriented PHP for Beginners | With Examples to Help You Understand! | OOP PHP Tutorial. Available at: https://www.youtube.com/watch?v=yrFr5PMdk2A&t=4s (Accessed: 17 April 2025). 
+
+Learned how to define classes and methods in PHP for efficient code organization. 
+
+Understood the concept of encapsulation and how to use public/private properties in PHP objects. 
+
+Stack Overflow Contributors (n.d.) PHP Notes for Professionals. Available at: file:///C:/Users/Anriel/Downloads/PHPNotesForProfessionals.pdf (Accessed: 17 April 2025). 
+
+Learned various PHP string and array manipulation functions for displaying and filtering user content. 
+
+Understood security practices such as escaping output with htmlspecialchars() to prevent XSS. 
+
+FreeCodeCamp.org (n.d.) PHP Programming Language Tutorial - Full Course. Available at: https://www.youtube.com/watch?v=OK_JCtrrv-c (Accessed: 17 April 2025). 
+
+Learned how to connect to a MySQL database using PDO and handle exceptions. 
+
+Understood structuring PHP files with includes (e.g., require 'db.php') for modular and reusable code. ---

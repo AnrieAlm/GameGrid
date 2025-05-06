@@ -1,4 +1,7 @@
 <?php
+
+/* file that authenticates login  */
+
 // Start the session to store user data and messages
 session_start();
 // Include the database connection file

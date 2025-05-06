@@ -1,4 +1,9 @@
 <?php
+
+/* file that helps users to login 
+
+*/
+
 session_start();
 //login and auth
 // Redirect authenticated users to the homepage

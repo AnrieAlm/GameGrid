@@ -1,4 +1,7 @@
 <?php
+
+/* home page file that displays the different reviews, search, menu bars, filter  */
+
 require_once 'db.php';
 
 // Fetch all games for the slider

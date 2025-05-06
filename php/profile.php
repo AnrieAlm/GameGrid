@@ -1,4 +1,7 @@
 <?php
+
+/* file that helps display profile content and checks if user is logged in or not*/
+
 // Start the session to access session variables
 session_start();
 // Include the database connection file

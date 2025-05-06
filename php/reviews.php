@@ -1,4 +1,6 @@
 <?php
+/* This is the reviews php file for the reviews page that displays the reviews from the database */
+
 // Start session and connect to database
 require 'init.php'; // Starts session
 require 'db.php';  // Connects to the database
