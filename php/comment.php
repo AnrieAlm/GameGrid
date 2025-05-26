@@ -4,8 +4,7 @@
 Author:- victor
 */
 
-// Include database credentials (optional if already defined in game_grid.php)
-include 'includes/game_grid.php'; // Ensure this file contains your database credentials
+include 'includes/game_grid.php'; 
 
 // Start session for user authentication
 session_start();
@@ -24,7 +23,7 @@ if ($conn->connect_error) {
     die("Database connection failed: " . $conn->connect_error);
 }
 
-// Check if user is logged in (you'll need to implement your login system)
+// Check if user is logged in 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401); // Unauthorized
     echo json_encode(["error" => "You must be logged in to post comments."]);

@@ -3,10 +3,7 @@ Author:- Neil Joseph */
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize userId from PHP session
-  //const userId = <?php echo isset($_SESSION['user_id']) ? json_encode($_SESSION['user_id']) : 'null'; ?>;
-
-  // Ensure the user is logged in before proceeding
+  
   if (!userId) {
     console.warn("User not logged in. Bookmarking functionality disabled.");
     return;
@@ -125,11 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSlide = 0; // Track the current slide index
   let autoSlideInterval; // Store the interval ID for auto-sliding
 
-  // const slides = <?php echo json_encode($games); ?>; // Convert PHP games array to JavaScript
-  // if (slides.length === 0) {
-  //   console.error("No games available for the slider.");
-  //   return;
-  // }
+  
 
   const heroBackground = document.querySelector(".hero-background");
   const heroTitle = document.getElementById("hero-title");

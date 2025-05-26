@@ -4,9 +4,7 @@ $dbname = 'gamegrid'; // Database name
 $username = 'root'; // Database username
 $password = 'root'; // Fixed typo
 
-// Remove the duplicate connection attempt
 
-//if you cant connetct to the database we dont want this to be displayed to our user 
 try{$conn = mysqli_connect(
     $db_server,
     $db_user,
@@ -31,18 +29,11 @@ try {
 }
 
 
-// bookmark.php
 
 // Include database connection
 require_once 'db.php';
 
-// Check if the user is logged in
-// session_start();
-// if (!isset($_SESSION['user_id'])) {
-//     http_response_code(401); // Unauthorized
-//     echo json_encode(['success' => false, 'message' => 'User not logged in']);
-//     exit;
-// }
+
 
 // Get POST data
 $userId = $_SESSION['user_id'];

@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
       
-      // In a real app, you would send this data to a server
       console.log('Login attempt:', { email, password });
       
       // For demo purposes, redirect to profile
@@ -50,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
       
-      // In a real app, you would send this data to a server
       console.log('Register attempt:', { fullName, userName, email, password });
       
       // For demo purposes, redirect to profile

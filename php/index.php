@@ -283,11 +283,7 @@ try {
   <h3><?php echo htmlspecialchars($game['title']); ?></h3>
   <p>Platform: <?php echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php echo htmlspecialchars($game['rating']); ?>/10</p>
 </div>
-                    <!-- <div class="game-card" data-game-id="<?php //echo htmlspecialchars($game['id']); ?>" data-platform="// echo htmlspecialchars($game['platform'] ?? ''); ?>">
-                        <img src="<?php //echo htmlspecialchars($game['image_url']); ?>" alt="<?php //echo htmlspecialchars($game['title']); ?>">
-                        <h3><?php //echo htmlspecialchars($game['title']); ?></h3>
-                        <p>Platform: <?php //echo htmlspecialchars($game['platform'] ?? 'N/A'); ?> | Rating: <?php //echo htmlspecialchars($game['rating']); ?>/10</p>
-                    </div> -->
+                    
                 <?php endforeach; ?>
             </div>
         </section>

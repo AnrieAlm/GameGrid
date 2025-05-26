@@ -45,17 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_comment'])) {
     $updated_content = trim($_POST['updated_content']);
     if (!empty($updated_content)) {
 
-        // Uncomment the following lines to add user_id validation
-
-        // $logged_in_user_id = $_SESSION['user_id']; // Get logged-in user's ID
-
-        // $stmtCheck = $pdo->prepare("SELECT user_id FROM comments WHERE id = :comment_id");
-
-        // $stmtCheck->execute(['comment_id' => $comment_id]);
-
-        // $comment = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-        // if ($comment && $comment['user_id'] === $logged_in_user_id) {
           $stmtUpdate = $pdo->prepare("UPDATE comments SET comment_text = :comment_text WHERE id = :comment_id");
 
           $stmtUpdate->execute([
@@ -82,17 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_comment'])) {
 
   $comment_id = (int)$_POST['comment_id'];
 
-  // Uncomment the following lines to add user_id validation
-
-  // $logged_in_user_id = $_SESSION['user_id']; // Get logged-in user's ID
-
-  // $stmtCheck = $pdo->prepare("SELECT user_id FROM comments WHERE id = :comment_id");
-
-  // $stmtCheck->execute(['comment_id' => $comment_id]);
-
-  // $comment = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-  // if ($comment && $comment['user_id'] === $logged_in_user_id) {
     $stmtDelete = $pdo->prepare("DELETE FROM comments WHERE id = :comment_id");
 
     $stmtDelete->execute(['comment_id' => $comment_id]);
@@ -392,14 +370,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         echo '<h1>' . htmlspecialchars($game['title']) . '</h1>';
         echo '<div class="review-meta">';
         echo '<span class="rating"><i class="fas fa-star"></i> ' . htmlspecialchars($game['rating']) . '/5</span>';
-        //echo '<span>Review by ' . htmlspecialchars($review['reviewer_name']) . '</span>';
-        //echo '<span>' . htmlspecialchars($review['review_date']) . '</span>';
+        
         echo '</div>';
 
         // Display platforms
         echo '<div class="review-meta">';
-        //echo '<span class="platforms">' . htmlspecialchars($game['genre']) . '</span>';
-        //echo '<span class="platforms">' . htmlspecialchars($game['type']) . '</span>';
+       
         echo '<span class="platforms">' . htmlspecialchars($game['platform']) . '</span>';
         echo '</div>';
 

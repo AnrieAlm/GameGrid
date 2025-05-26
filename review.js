@@ -184,8 +184,6 @@ function displayComments(gameId) {
   `).join('');
 }
 
-// ${game.screenshots.map((screenshot, index) => 
-//   `<img src="${screenshot}" alt="Screenshot ${index + 1}" onerror="this.src='${game.image}'"/>`
-// ).join('')}
+
 
   

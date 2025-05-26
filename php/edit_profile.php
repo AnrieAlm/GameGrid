@@ -150,7 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <small>Username cannot be changed</small>
                 </div>
 
-                <!-- Replace with -->
 <div class="form-group bio-group">
   <label for="bio">Bio</label>
   <textarea 

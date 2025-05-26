@@ -68,10 +68,7 @@ if (isset($_SESSION['user_id'])) {
   height: 2px;
  
 }
-/** ======================================NEIL THIS WAS THE PROBLEM take it out <---------------------------
-.tab-content {
-  display: none;
-}
+
 */
 .tab-content.active {
   display: block;
@@ -177,9 +174,7 @@ include 'header.php';
   
 
   ?>
-       <!-- Header Section -->
-
- <!-- Include the header.php file -->
+       
 
  
 
@@ -213,7 +208,7 @@ include 'header.php';
       <article class="tab-content" id="register-tab" style="display: none;">
         <h2>Create Your Gaming Profile</h2>
         <p>Join thousands of gamers on Game Grid.</p>
-        <form id="registerForm" method="POST" action="auth.php"><!-- neil here  -->
+        <form id="registerForm" method="POST" action="auth.php">
           <input type="hidden" name="register" value="1">
           <label for="fullName">Full Name</label>
           <input type="text" id="fullName" name="full_name" placeholder="Enter your full name" required>

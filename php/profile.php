@@ -113,12 +113,7 @@ if (isset($_SESSION['success'])) {
       <nav>
         <ul class="p_nav list">
          
-       <!--  <li>
-            <a href="#">
-              <img src="icons/dashboard_customize_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="Dashboard" width="24" height="24">
-              Dashboards
-            </a>
-          </li> -->
+       
 
           <li>
             <a href="#">
@@ -152,10 +147,7 @@ if (isset($_SESSION['success'])) {
     <section class="profile-bookmarks">
   <h3>Bookmarked Games</h3>
   <ul class="p_bookmarks-content"></ul>
-<!-- </section>
-    <section class="form-container" id="p_bookmarks-card">
-      <header class="p_section-header">
-        <h2 id="bookmarks-heading">Your Bookmarks</h2> -->
+
         <br>
         <hr>
         <br>
@@ -163,9 +155,7 @@ if (isset($_SESSION['success'])) {
       </header>
 
       <ul class="p_bookmarks-content">
-        <!-- Example bookmark list item -->
-        <!-- Dynamically fetch bookmarks from the database if needed -->
-        <!-- <li><a href="#">Game Review: Epic Adventure</a></li> -->
+        
       </ul>
     </section>
 

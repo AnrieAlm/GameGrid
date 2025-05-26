@@ -226,7 +226,7 @@ require 'db.php'; // Database connection
 
 </style>
 
-<script src="script.js" defer></script> <!-- Optional JS enhancements -->
+<script src="script.js" defer></script> 
 
 <body>
 <!-- Header Section -->

@@ -68,7 +68,7 @@ try {
             if (!empty($teamMembers)) {
                 foreach ($teamMembers as $member) {
                     echo '<span class="team-member">';
-                    echo '<img src="' . htmlspecialchars($member['image']) . '" alt="' . htmlspecialchars($member['name']) . '">';
+                    echo '<img src="' . htmlspecialchars($member['image']) . '" alt="' . htmlspecialchars($member['name']) . '">'; //stops injection
                     echo '<h3>' . htmlspecialchars($member['name']) . '</h3>';
                     echo '<p>' . htmlspecialchars($member['role']) . '</p>';
                     echo '</span>';
