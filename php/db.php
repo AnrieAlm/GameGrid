@@ -1,9 +1,9 @@
 <?php
 // Database configuration
-$host = 'localhost'; // Database host
-$dbname = 'gamegrid'; // Database name
-$username = 'root'; // Database username
-$password = 'root'; // Database password
+$host = 'sql103.infinityfree.com'; // Database host
+$dbname = 'if0_38770055_gamegrid'; // Database name
+$username = 'if0_38770055'; // Database username
+$password = 'anjampattiNj9'; // Database password
 
 try {
     // Create a new PDO instance

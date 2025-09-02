@@ -1,8 +1,8 @@
 <?php // connecting to mySQL server in php and the other php files as well
-$db_server = "localhost";
-$db_user = "root";
-$db_pass = "root"; // Try "root" if empty doesn't work
-$db_name = "gamegrid"; // Fixed typo
+$db_server = "sql103.infinityfree.com'";
+$db_user = "if0_38770055";
+$db_pass = "anjampattiNj9"; // Try "root" if empty doesn't work
+$db_name = "if0_38770055_gamegrid"; // Fixed typo
 
 // Remove the duplicate connection attempt
 
